@@ -9,9 +9,9 @@
         public static string ReadToken()
         {
 #if DEBUG
-            string tokenFilePath = $"{Statics.DataFolderPath}/token_debug";
+            string tokenFilePath = $"{Statics.DataFolderPath}/debug.token";
 #else
-            string tokenFilePath = $"{Statics.DataFolderPath}/token_release"; 
+            string tokenFilePath = $"{Statics.DataFolderPath}/release.token"; 
 #endif
             if (File.Exists(tokenFilePath) == false) throw new FileNotFoundException($"Could not find file '{tokenFilePath}'");
 
