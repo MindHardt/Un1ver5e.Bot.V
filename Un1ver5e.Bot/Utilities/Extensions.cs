@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Disqord;
 
 namespace Un1ver5e.Bot.Utilities
 {
@@ -25,5 +21,12 @@ namespace Un1ver5e.Bot.Utilities
         /// <returns></returns>
         public static T GetRandomElement<T>(this IList<T> collection, Random? randomOverride = null) =>
             collection.Shuffle(randomOverride).First();
+
+        /// <summary>
+        /// Formats string as a Discord Codeblock
+        /// </summary>
+        /// <param name="orig">The original string.</param>
+        /// <returns></returns>
+        public static string AsCodeBlock(this string original, string lang = "") => $"```{lang}\n{original}```";
     }
 }
