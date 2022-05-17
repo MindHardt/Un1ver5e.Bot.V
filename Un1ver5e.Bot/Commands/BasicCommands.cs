@@ -7,7 +7,7 @@ using Un1ver5e.Commands.Attributes;
 namespace Un1ver5e.Commands
 {
     [Name("Базовые команды")]
-    public class BasicCommandsModule : DiscordModuleBase
+    public class BasicCommands : DiscordModuleBase
     {
         public static Random Random { private get; set; } = Random.Shared;
 
