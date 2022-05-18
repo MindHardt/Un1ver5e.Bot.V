@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Un1ver5e.Bot.BoardGames.Core
 {
-    public record CompleteThrowResult : IComparable<CompleteThrowResult>
+    /// <summary>
+    /// Represents a throw of a single <see cref="Core.Dice"/> object.
+    /// </summary>
+    public record ThrowResult
     {
         public Dice Dice { get; }
         public IReadOnlyCollection<int> Throws { get; }
@@ -14,18 +17,15 @@ namespace Un1ver5e.Bot.BoardGames.Core
 
         public int GetThrowsSum() => Throws.Sum();
         public int GetCompleteSum() => Throws.Sum() + Modifyer;
-        internal CompleteThrowResult(Dice dice, IEnumerable<int> throws, int modifyer = 0)
+        internal ThrowResult(Dice dice, IEnumerable<int> throws, int modifyer = 0)
         {
             Dice = dice;
             Throws = throws.ToArray();
             Modifyer = modifyer;
         }
 
-        public static explicit operator int(CompleteThrowResult result) => result.GetCompleteSum();
-        /// <summary>
-        /// Returns throw result as well as its trace.
-        /// </summary>
-        /// <returns></returns>
+        public static explicit operator int(ThrowResult result) => result.GetCompleteSum();
+
         public override string ToString()
         {
             bool modifyerPositive = Modifyer >= 0;
@@ -46,7 +46,7 @@ namespace Un1ver5e.Bot.BoardGames.Core
             return $"{Dice}{modifyerSign}{Modifyer} => {steps} => {GetThrowsSum()}{modifyerSign}{Modifyer} => {GetCompleteSum()}";
         }
 
-        public int CompareTo(CompleteThrowResult? other)
+        public int CompareTo(ThrowResult? other)
         {
             if (other is null) throw new NullReferenceException();
             return GetCompleteSum().CompareTo(other.GetCompleteSum());

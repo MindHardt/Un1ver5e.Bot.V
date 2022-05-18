@@ -1,6 +1,7 @@
 ﻿using Disqord;
 using Disqord.Bot;
 using Qmmands;
+using Microsoft.Extensions.Hosting;
 using Un1ver5e.Bot.BoardGames.Core;
 using Un1ver5e.Bot.Utilities;
 
@@ -9,10 +10,17 @@ namespace Un1ver5e.Bot.Commands
     [Name("Настолки"), Description("Команды для настолок!")]
     public partial class BoardGamesCommands : DiscordModuleBase
     {
+        public BoardGamesCommands(DiceThrower service)
+        {
+            Service = service;
+        }
+
+        public DiceThrower Service { get; set; }
+
         [Command("throw", "dice"), Description("Бросает куб, заданный текстовым описанием.")]
         public DiscordCommandResult ThrowCommand(string query)
         {
-            string reply = Dice.ThrowByQuery(query).ToString();
+            string reply = Service.ThrowByQuery(query).ToString();
 
             LocalEmbed embed = new()
             {
@@ -32,7 +40,7 @@ namespace Un1ver5e.Bot.Commands
         [Command("listdice"), Description("Показывает кешированные кубы.")]
         public DiscordCommandResult ListDiceCommand()
         {
-            string reply = string.Join('\n', Dice.GetCacheSnapshot().Keys).AsCodeBlock();
+            string reply = string.Join('\n', Service.GetCacheSnapshot().Keys).AsCodeBlock();
 
             LocalEmbed embed = new()
             {
@@ -46,12 +54,14 @@ namespace Un1ver5e.Bot.Commands
                     new LocalEmbedField()
                     {
                         Name = "Кеширование кубов:",
-                        Value = Dice.AlwaysCacheDice ? ":green_circle:" : ":red_circle:"
+                        Value = Service.AlwaysCacheDice ? ":green_circle:" : ":red_circle:"
                     }
                 }
             };
 
             return Reply(embed);
         }
+
+
     }
 }
