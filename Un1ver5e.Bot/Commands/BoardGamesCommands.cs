@@ -1,7 +1,6 @@
 ﻿using Disqord;
 using Disqord.Bot;
 using Qmmands;
-using Microsoft.Extensions.Hosting;
 using Un1ver5e.Bot.BoardGames.Core;
 using Un1ver5e.Bot.Utilities;
 
