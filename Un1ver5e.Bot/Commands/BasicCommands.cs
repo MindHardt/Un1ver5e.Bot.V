@@ -166,43 +166,4 @@ namespace Un1ver5e.Commands
             };
         }
     }
-
-    [Name("📓 Логи")]
-    [RequireBotOwner]
-    [Group("logs"), Description("Логи!")]
-    public class LogCommands : DiscordModuleBase
-    {
-        [Command("get"), Description("Логи")]
-        public DiscordCommandResult GetLogsCommand()
-        {
-            Stream logs = new FileStream($"{Logging.LogsFolderPath}/latest.log", FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
-
-            LocalMessage msg = new()
-            {
-                Attachments = new List<LocalAttachment>() { new LocalAttachment(logs, "latest.log") },
-            };
-
-            return Reply(msg);
-        }
-
-        [Command("setlevel")]
-        public DiscordCommandResult SetLevelCommand(string level)
-        {
-            Serilog.Events.LogEventLevel actualLevel = level.ToLower() switch
-            {
-                "verbose" => Serilog.Events.LogEventLevel.Verbose,
-                "debug" => Serilog.Events.LogEventLevel.Debug,
-                "info" => Serilog.Events.LogEventLevel.Information,
-                "information" => Serilog.Events.LogEventLevel.Information,
-                "warn" => Serilog.Events.LogEventLevel.Warning,
-                "warning" => Serilog.Events.LogEventLevel.Warning,
-                "error" => Serilog.Events.LogEventLevel.Error,
-                _ => throw new ArgumentException("Недопустимый уровень логгирования.")
-            };
-
-            Logging.SetLogLevel(actualLevel);
-
-            return Reply("Успешно!".AsCodeBlock());
-        }
-    }
 }
