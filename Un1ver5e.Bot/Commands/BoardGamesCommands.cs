@@ -7,7 +7,7 @@ using Un1ver5e.Bot.Utilities;
 
 namespace Un1ver5e.Bot.Commands
 {
-    [Name("Настолки"), Description("Команды для настолок!")]
+    [Name("🎲 Настолки"), Description("Команды для настолок!")]
     public partial class BoardGamesCommands : DiscordModuleBase
     {
         public BoardGamesCommands(DiceThrower service)

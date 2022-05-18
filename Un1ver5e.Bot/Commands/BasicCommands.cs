@@ -6,7 +6,7 @@ using Un1ver5e.Commands.Attributes;
 
 namespace Un1ver5e.Commands
 {
-    [Name("Базовые команды")]
+    [Name("⚙️ Базовые команды")]
     public class BasicCommands : DiscordModuleBase
     {
         public static Random Random { private get; set; } = Random.Shared;
@@ -134,7 +134,7 @@ namespace Un1ver5e.Commands
         }
     }
 
-    [Name("Нейросетки!")]
+    [Name("🤖 Нейросетки!")]
     [Group("generate", "gen", "g"), Description("Нейронки делают фигню!")]
     public class GenerateCommands : DiscordModuleBase
     {
@@ -167,7 +167,7 @@ namespace Un1ver5e.Commands
         }
     }
 
-    [Name("Логи")]
+    [Name("📓 Логи")]
     [RequireBotOwner]
     [Group("logs"), Description("Логи!")]
     public class LogCommands : DiscordModuleBase
@@ -205,5 +205,4 @@ namespace Un1ver5e.Commands
             return Reply("Успешно!".AsCodeBlock());
         }
     }
-
 }

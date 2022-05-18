@@ -28,7 +28,7 @@ namespace Un1ver5e.Bot.Commands
             {
                 LocalEmbedField field = new()
                 {
-                    Name = $"**{module.Name}** ({string.Join(", ", module.Aliases)})",
+                    Name = $"**{module.Name}** ({string.Join(", ", module.Aliases.Select(a => $"`{a}`"))})",
                     Value = string.Join(", ", module.Commands.Select(c => $"`{c.Name}`"))
                 };
 
