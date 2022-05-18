@@ -9,6 +9,7 @@ namespace Un1ver5e.Bot.Commands.Attributes
     /// <summary>
     /// Specifies that this wont appear in help.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
     public class DisableHelpAttribute : Attribute
     {
 
