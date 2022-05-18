@@ -8,7 +8,7 @@ namespace Un1ver5e.Bot
 {
     internal static class Statics
     {
-        private static DirectoryInfo dataDirectory = Directory.CreateDirectory("Data");
+        private static readonly DirectoryInfo dataDirectory = Directory.CreateDirectory("Data");
         /// <summary>
         /// A path to Data folder.
         /// </summary>

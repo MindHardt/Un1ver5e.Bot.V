@@ -11,7 +11,7 @@ namespace Un1ver5e.Bot.Utilities
 {
     internal class Logging
     {
-        private static LoggingLevelSwitch loggingLevelSwitch = new(LogEventLevel.Information);
+        private static readonly LoggingLevelSwitch loggingLevelSwitch = new(LogEventLevel.Information);
         /// <summary>
         /// Gets default <see cref="LoggerConfiguration"/> used for MO.
         /// </summary>
@@ -25,7 +25,7 @@ namespace Un1ver5e.Bot.Utilities
                 .CreateLogger();
         }
 
-        private static DirectoryInfo logsDirectory = Directory.CreateDirectory(Statics.DataFolderPath + "/logs");
+        private static readonly DirectoryInfo logsDirectory = Directory.CreateDirectory(Statics.DataFolderPath + "/logs");
         /// <summary>
         /// A path to logs folder.
         /// </summary>
