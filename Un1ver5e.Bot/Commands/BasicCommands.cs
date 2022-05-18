@@ -139,25 +139,25 @@ namespace Un1ver5e.Commands
     public class GenerateCommands : DiscordModuleBase
     {
         [Command("cat"), Description("Котики!")]
-        public DiscordCommandResult GenerateCatCommand()
+        public async ValueTask<DiscordCommandResult> GenerateCatCommand()
         {
-            return Reply(GetGeneratedPicture("https://thiscatdoesnotexist.com/"));
+            return Reply(await GetGeneratedPicture("https://thiscatdoesnotexist.com/"));
         }
         [Command("horse"), Description("Лошади!")]
-        public DiscordCommandResult GenerateHorseCommand()
+        public async ValueTask<DiscordCommandResult> GenerateHorseCommand()
         {
-            return Reply(GetGeneratedPicture("https://thishorsedoesnotexist.com/"));
+            return Reply(await GetGeneratedPicture("https://thishorsedoesnotexist.com/"));
         }
         [Command("art"), Description("Искусство!(?)")]
-        public DiscordCommandResult GenerateArtCommand()
+        public async ValueTask<DiscordCommandResult> GenerateArtCommand()
         {
-            return Reply(GetGeneratedPicture("https://thisartworkdoesnotexist.com/"));
+            return Reply(await GetGeneratedPicture("https://thisartworkdoesnotexist.com/"));
         }
 
-        private static LocalMessage GetGeneratedPicture(string url)
+        private static async ValueTask<LocalMessage> GetGeneratedPicture(string url)
         {
             using HttpClient client = new();
-            Stream pic = client.GetStreamAsync(url).GetAwaiter().GetResult();
+            Stream pic = await client.GetStreamAsync(url);
 
             return new LocalMessage()
             {
@@ -177,7 +177,7 @@ namespace Un1ver5e.Commands
         {
             Stream logs = new FileStream($"{Logging.LogsFolderPath}/latest.log", FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
 
-            LocalMessage msg = new LocalMessage()
+            LocalMessage msg = new()
             {
                 Attachments = new List<LocalAttachment>() { new LocalAttachment(logs, "latest.log") },
             };
