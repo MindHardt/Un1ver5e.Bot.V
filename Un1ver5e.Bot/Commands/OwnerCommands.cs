@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Disqord.Extensions.Interactivity;
 using Disqord.Gateway;
 using Serilog.Core;
+using System.Text;
+using Disqord.Extensions.Interactivity.Menus.Paged;
 
 namespace Un1ver5e.Bot.Commands
 {
@@ -16,24 +18,13 @@ namespace Un1ver5e.Bot.Commands
     {
         private readonly IHost host;
         private readonly LoggingLevelSwitch logswitch;
+        private readonly FolderPathProvider folders;
 
-        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch)
+        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch, FolderPathProvider folders)
         {
             this.host = host;
             this.logswitch = logswitch;
-        }
-
-        [Command("getlogs"), Description("Логи")]
-        public DiscordCommandResult GetLogsCommand()
-        {
-            Stream logs = new FileStream($"latest.log", FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
-
-            LocalMessage msg = new()
-            {
-                Attachments = new List<LocalAttachment>() { new LocalAttachment(logs, "latest.log") },
-            };
-
-            return Reply(msg);
+            this.folders = folders;
         }
 
         [Command("setloglevel")]

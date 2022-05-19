@@ -16,10 +16,12 @@ namespace Un1ver5e.Bot.Utilities
             return new HostBuilder()
                 .UseSerilog((context, services, logger) =>
                 {
+                    string filePath = $"{services.GetRequiredService<FolderPathProvider>()["Logs"]}/Log-.log";
+
                     logger
                     .MinimumLevel.ControlledBy(services.GetRequiredService<LoggingLevelSwitch>())
                     .WriteTo.Console()
-                    .WriteTo.File(services.GetRequiredService<PathContainer>().LogsFolder, shared: true);
+                    .WriteTo.File(filePath, rollingInterval: RollingInterval.Day, shared: true);
                 })
                 .ConfigureHostConfiguration(config =>
                 {
@@ -40,7 +42,13 @@ namespace Un1ver5e.Bot.Utilities
                             "1d2", "1d3", "1d4", "1d6", "1d8", "1d10", "1d12", "1d20", "1d100", "2d6"
                         }
                     });
-                    services.AddSingleton<PathContainer>();
+                    services.AddSingleton(new FolderPathProvider()
+                    {
+                        Paths = new string[]
+                        {
+                            "Logs", "Data", "Data/Gallery"
+                        }
+                    });
                 })
                 .ConfigureDiscordBot((context, bot) =>
                 {

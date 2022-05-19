@@ -1,5 +1,6 @@
 ﻿using Disqord;
 using Disqord.Bot;
+using Microsoft.Extensions.Configuration;
 using Qmmands;
 using Un1ver5e.Bot.Utilities;
 using Un1ver5e.Commands.Attributes;
@@ -9,13 +10,20 @@ namespace Un1ver5e.Commands
     [Name("⚙️ Базовые команды")]
     public class BasicCommands : DiscordModuleBase
     {
-        public static Random Random { private get; set; } = Random.Shared;
+        private readonly Random random;
+        private readonly IConfiguration config;
 
-        //[Command("splash"), Description("Сплеш из майнкрафта!")]
-        //public DiscordCommandResult SplashCommand()
-        //{
-        //    return Reply(SplashReader.GetSplash());
-        //}
+        public BasicCommands(Random random, IConfiguration config)
+        {
+            this.random = random;
+            this.config = config;
+        }
+
+        [Command("splash"), Description("Сплеш из майнкрафта!")]
+        public DiscordCommandResult SplashCommand()
+        {
+            return Reply(config.GetSection("splashes").Get<string[]>().GetRandomElement());
+        }
 
         [Command("roll"), Description("Случайное число от 1 до 100.")]
         public DiscordCommandResult RollCommand()
@@ -33,7 +41,7 @@ namespace Un1ver5e.Commands
                     new LocalEmbedField()
                     {
                         Name = $"Результат вашего броска [{lowerBound}..{upperBound}]:",
-                        Value = $"🎲 **{Random.Next(lowerBound, upperBound + 1)}**"
+                        Value = $"🎲 **{random.Next(lowerBound, upperBound + 1)}**"
                     }
                 }
             };
