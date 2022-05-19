@@ -19,7 +19,7 @@ namespace Un1ver5e.Bot.Utilities
         /// <typeparam name="T"></typeparam>
         /// <param name="collection"></param>
         /// <returns></returns>
-        public static T GetRandomElement<T>(this IList<T> collection, Random? randomOverride = null) =>
+        public static T GetRandomElement<T>(this IEnumerable<T> collection, Random? randomOverride = null) =>
             collection.Shuffle(randomOverride).First();
 
         /// <summary>
