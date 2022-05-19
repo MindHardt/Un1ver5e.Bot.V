@@ -2,19 +2,31 @@
 using Disqord.Bot;
 using Qmmands;
 using Un1ver5e.Bot.Utilities;
-using System.Linq;
+using Microsoft.Extensions.Hosting;
+using Disqord.Extensions.Interactivity;
+using Disqord.Gateway;
+using Serilog.Core;
 
 namespace Un1ver5e.Bot.Commands
 {
     [Name("🔧 Создатель")]
     [RequireBotOwner]
-    [Group("owner"), Description("Страшные вещи")]
-    public class LogCommands : DiscordModuleBase
+    [Group("owner", "o"), Description("Страшные вещи")]
+    public class OwnerCommands : DiscordModuleBase
     {
+        private readonly IHost host;
+        private readonly LoggingLevelSwitch logswitch;
+
+        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch)
+        {
+            this.host = host;
+            this.logswitch = logswitch;
+        }
+
         [Command("getlogs"), Description("Логи")]
         public DiscordCommandResult GetLogsCommand()
         {
-            Stream logs = new FileStream($"{Logging.LogsFolderPath}/latest.log", FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
+            Stream logs = new FileStream($"latest.log", FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
 
             LocalMessage msg = new()
             {
@@ -39,15 +51,34 @@ namespace Un1ver5e.Bot.Commands
                 _ => throw new ArgumentException("Недопустимый уровень логгирования.")
             };
 
-            Logging.SetLogLevel(actualLevel);
+            logswitch.MinimumLevel = actualLevel;
 
             return Reply("Успешно!".AsCodeBlock());
         }
 
         [Command("shutdown")]
-        public void ShutDownCommand()
+        public async ValueTask ShutDownCommand()
         {
-            Environment.Exit(0); //TODO: create a proper shutdown
+            await Reply("Вы уверены что хотите продолжить?");
+
+            InteractivityExtension inter = Context.Bot.GetInteractivity();
+            Snowflake channelId = Context.ChannelId;
+            TimeSpan timeout = TimeSpan.FromSeconds(30);
+
+            MessageReceivedEventArgs args = await inter.WaitForMessageAsync(channelId, (e) =>
+            {
+                return e.AuthorId == Context.Author.Id && e.Message.Content.ToLower() == "да";
+            }, timeout);
+
+            if (args != null)
+            {
+                await Reply("Выключаюсь!");
+                await host.StopAsync();
+            }
+            else
+            {
+                await Reply("Время вышло!");
+            }
         }
     }
 }

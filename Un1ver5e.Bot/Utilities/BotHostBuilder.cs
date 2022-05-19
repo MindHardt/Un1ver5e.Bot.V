@@ -3,27 +3,33 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Un1ver5e.Bot.BoardGames.Core;
+using Serilog.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace Un1ver5e.Bot.Utilities
 {
-    internal static class BotHostBuilder
+    public static class BotHostBuilder
     {
-        internal static IHost CreateHost()
+        public static IHost CreateHost(string[] args)
         {
             // All host configuration goes here.
             return new HostBuilder()
-                .UseSerilog((context, logger) =>
+                .UseSerilog((context, services, logger) =>
                 {
-                    logger.WriteTo.Logger(Logging.GetLogger());
+                    logger
+                    .MinimumLevel.ControlledBy(services.GetRequiredService<LoggingLevelSwitch>())
+                    .WriteTo.Console()
+                    .WriteTo.File(services.GetRequiredService<PathContainer>().LogsFolder, shared: true);
                 })
-                .ConfigureDiscordBot((context, bot) =>
+                .ConfigureHostConfiguration(config =>
                 {
-                    bot.Activities = new Disqord.Gateway.LocalActivity[] { new(SplashReader.GetSplash(), Disqord.ActivityType.Watching) };
-                    bot.Token = TokenReader.ReadToken();
-                    bot.Prefixes = new[] { PrefixReader.ReadPrefix() };
+                    config.SetBasePath(Environment.CurrentDirectory);
+                    config.AddJsonFile("hostconfig.json");
+                    config.AddCommandLine(args);
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddSingleton(new LoggingLevelSwitch());
                     services.AddSingleton(Random.Shared);
                     services.AddSingleton(new DiceThrower()
                     {
@@ -34,8 +40,20 @@ namespace Un1ver5e.Bot.Utilities
                             "1d2", "1d3", "1d4", "1d6", "1d8", "1d10", "1d12", "1d20", "1d100", "2d6"
                         }
                     });
+                    services.AddSingleton<PathContainer>();
+                })
+                .ConfigureDiscordBot((context, bot) =>
+                {
+                    string splash = context.Configuration.GetSection("splashes").Get<string[]>().GetRandomElement();
+                    string token = context.Configuration["token"];
+                    string[] prefixes = context.Configuration.GetSection("prefixes").Get<string[]>();
+
+                    bot.Activities = new Disqord.Gateway.LocalActivity[] { new(splash, Disqord.ActivityType.Watching) };
+                    bot.Token = token;
+                    bot.Prefixes = prefixes;
                 })
                 .Build();
         }
+
     }
 }

@@ -11,11 +11,11 @@ namespace Un1ver5e.Commands
     {
         public static Random Random { private get; set; } = Random.Shared;
 
-        [Command("splash"), Description("Сплеш из майнкрафта!")]
-        public DiscordCommandResult SplashCommand()
-        {
-            return Reply(SplashReader.GetSplash());
-        }
+        //[Command("splash"), Description("Сплеш из майнкрафта!")]
+        //public DiscordCommandResult SplashCommand()
+        //{
+        //    return Reply(SplashReader.GetSplash());
+        //}
 
         [Command("roll"), Description("Случайное число от 1 до 100.")]
         public DiscordCommandResult RollCommand()
