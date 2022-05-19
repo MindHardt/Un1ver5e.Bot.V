@@ -5,6 +5,7 @@ using Serilog;
 using Un1ver5e.Bot.BoardGames.Core;
 using Serilog.Core;
 using Microsoft.Extensions.Configuration;
+using Un1ver5e.Bot.Database;
 
 namespace Un1ver5e.Bot.Utilities
 {
@@ -49,6 +50,7 @@ namespace Un1ver5e.Bot.Utilities
                             "Logs", "Data", "Data/Gallery"
                         }
                     });
+                    services.AddSingleton<DatabaseController>();
                 })
                 .ConfigureDiscordBot((context, bot) =>
                 {
