@@ -9,7 +9,8 @@ Features list:
 - [x] Rate command
 - [x] Help Command 1.0
 - [x] Dice Thrower
-- [ ] Database
+- [x] Database
+- [ ] Stats command
 - [ ] Help Command 2.0
 - [ ] Schedules
 - [ ] Arklens DnD (see below)
