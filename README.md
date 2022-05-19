@@ -17,6 +17,7 @@ Features list:
 
 ### Boardgames
 One of the main features of MO is its long-awaited board games module, which will allow playing various board games in Discord! Some of the possible options are:
+- [ ] Rock-Paper-Scissors
 - [ ] Forbidden desert
 - [ ] Catan
 - [ ] Carcassone
