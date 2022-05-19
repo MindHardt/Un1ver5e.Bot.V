@@ -5,6 +5,8 @@ Features list:
 - [x] Proper logging
 - [x] Docker compatible
 - [x] Fully functional text commands integration
+- [x] Neuro-generated pictures (thiscatdoesnotexist.com, etc...)
+- [x] Rate command
 - [x] Help Command 1.0
 - [x] Dice Thrower
 - [ ] Database
