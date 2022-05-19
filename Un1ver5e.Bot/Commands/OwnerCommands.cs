@@ -6,8 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Disqord.Extensions.Interactivity;
 using Disqord.Gateway;
 using Serilog.Core;
-using System.Text;
-using Disqord.Extensions.Interactivity.Menus.Paged;
 
 namespace Un1ver5e.Bot.Commands
 {
