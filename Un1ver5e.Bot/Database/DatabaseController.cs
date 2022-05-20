@@ -5,13 +5,18 @@ namespace Un1ver5e.Bot.Database
 {
     public class DatabaseController
     {
-        private string connstr;
+        public string Host { get; }
+        public string Name { get; }
+        private readonly string connstr;
 
-        public DatabaseController(string connstr)
+        public DatabaseController(string dbHost, string dbUsername, string dbPassword, string dbName)
         {
-            this.connstr = connstr;
+            Host = dbHost;
+            Name = dbName;
+            connstr = $"Host={dbHost};Username={dbUsername};Password={dbPassword};Database={dbName}";
         }
-        private NpgsqlConnection GetOpenedConnection()
+
+        public NpgsqlConnection GetOpenedConnection()
         {
             var con = new NpgsqlConnection(connstr);
             con.Open();
@@ -40,6 +45,21 @@ namespace Un1ver5e.Bot.Database
             }
 
             return sw.Elapsed;
+        }
+        /// <summary>
+        /// Gets the size of the DB.
+        /// </summary>
+        /// <returns></returns>
+        public async ValueTask<long> GetSize()
+        {
+            using var conn = GetOpenedConnection();
+            NpgsqlCommand command = new()
+            {
+                Connection = conn,
+                CommandText = $"select pg_database_size('{Name}')"
+            };
+
+            return (long)(await command.ExecuteScalarAsync())!;
         }
 
     }

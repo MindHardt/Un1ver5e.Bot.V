@@ -16,13 +16,11 @@ namespace Un1ver5e.Bot.Commands
     {
         private readonly IHost host;
         private readonly LoggingLevelSwitch logswitch;
-        private readonly FolderPathProvider folders;
 
-        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch, FolderPathProvider folders)
+        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch)
         {
             this.host = host;
             this.logswitch = logswitch;
-            this.folders = folders;
         }
 
         [Command("setloglevel")]

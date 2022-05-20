@@ -110,7 +110,7 @@ namespace Un1ver5e.Commands
                 },
             };
 
-            return Reply(respond.WithReply(message.Id));
+            return Response(respond.WithReply(Context.Message.ReferencedMessage.Value.Id));
         }
 
         [Command("stealemoji", "steal"), Description("Ваш эмоджи теперь мой.")]

@@ -33,11 +33,10 @@ namespace Un1ver5e.Bot.Utilities
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton(new LoggingLevelSwitch());
-                    services.AddSingleton(Random.Shared);
+                    services.AddSingleton<Random>();
                     services.AddSingleton(new DiceThrower()
                     {
                         AlwaysCacheDice = true,
-                        Randomizer = Random.Shared,
                         CacheBase = new string[]
                         {
                             "1d2", "1d3", "1d4", "1d6", "1d8", "1d10", "1d12", "1d20", "1d100", "2d6"
@@ -50,7 +49,7 @@ namespace Un1ver5e.Bot.Utilities
                             "Logs", "Data", "Data/Gallery"
                         }
                     });
-                    services.AddSingleton<DatabaseController>();
+                    services.AddSingleton(new DatabaseController(context.Configuration["dbhost"], context.Configuration["dbusername"], context.Configuration["dbpassword"], context.Configuration["dbname"]));
                 })
                 .ConfigureDiscordBot((context, bot) =>
                 {
