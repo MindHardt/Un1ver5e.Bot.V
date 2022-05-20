@@ -32,8 +32,8 @@ namespace Un1ver5e.Bot.Utilities
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddSingleton(new LoggingLevelSwitch());
                     services.AddSingleton<Random>();
+                    services.AddSingleton<LoggingLevelSwitch>();
                     services.AddSingleton(new DiceThrower()
                     {
                         AlwaysCacheDice = true,
@@ -41,7 +41,7 @@ namespace Un1ver5e.Bot.Utilities
                         {
                             "1d2", "1d3", "1d4", "1d6", "1d8", "1d10", "1d12", "1d20", "1d100", "2d6"
                         }
-                    });
+                    }); //TODO: Make all singleton services use config && name them properly
                     services.AddSingleton(new FolderPathProvider()
                     {
                         Paths = new string[]
@@ -54,7 +54,7 @@ namespace Un1ver5e.Bot.Utilities
                 .ConfigureDiscordBot((context, bot) =>
                 {
                     string splash = context.Configuration.GetSection("splashes").Get<string[]>().GetRandomElement();
-                    string token = context.Configuration["token"];
+                    string token = context.Configuration["discordtoken"];
                     string[] prefixes = context.Configuration.GetSection("prefixes").Get<string[]>();
 
                     bot.Activities = new Disqord.Gateway.LocalActivity[] { new(splash, Disqord.ActivityType.Watching) };
