@@ -10,6 +10,8 @@ Features list:
 - [x] Help Command 1.0
 - [x] Dice Thrower
 - [x] Database
+- [x] Configuraion via JSON
+- [ ] Custom-configured pomodoro timers
 - [ ] Stats command
 - [ ] Help Command 2.0
 - [ ] Schedules
