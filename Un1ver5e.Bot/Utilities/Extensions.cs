@@ -28,5 +28,12 @@ namespace Un1ver5e.Bot.Utilities
         /// <param name="orig">The original string.</param>
         /// <returns></returns>
         public static string AsCodeBlock(this string original, string lang = "") => $"```{lang}\n{original}```";
+
+        /// <summary>
+        /// Returns either :green_circle: or :red_circle: emoji depending on <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static LocalEmoji AsEmoji(this bool value) => value ? LocalEmoji.FromString(":green_circle:") : LocalEmoji.FromString(":red_circle:");
     }
 }
