@@ -1,11 +1,25 @@
 ﻿using Disqord.Bot.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System.Text.RegularExpressions;
 
 namespace Un1ver5e.Bot.BoardGames.Core
 {
-    public class DiceThrower
+    public class DiceService
     {
+        /// <summary>
+        /// Default constructor for HostBuilder.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="random"></param>
+        public DiceService(IConfiguration config, Random random)
+        {
+            IConfigurationSection configSection = config.GetSection("dice_service");
+
+            AlwaysCacheDice = configSection.GetSection("cache_dice").Get<bool>();
+            CacheBase = configSection.GetSection("cache_base").Get<string[]>();
+            Randomizer = random;
+        }
         /// <summary>
         /// The random object used to create throws. Defaults to <see cref="Random.Shared"/>.
         /// </summary>

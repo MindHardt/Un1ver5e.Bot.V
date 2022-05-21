@@ -1,24 +1,35 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Configuration;
+using Npgsql;
 using System.Diagnostics;
 
 namespace Un1ver5e.Bot.Database
 {
-    public class DatabaseController
+    public class DatabaseService
     {
         public string Host { get; }
         public string Name { get; }
-        private readonly string connstr;
+        private readonly string connectionString;
 
-        public DatabaseController(string dbHost, string dbUsername, string dbPassword, string dbName)
+        public DatabaseService(IConfiguration config)
         {
-            Host = dbHost;
-            Name = dbName;
-            connstr = $"Host={dbHost};Username={dbUsername};Password={dbPassword};Database={dbName}";
+            IConfigurationSection configSection = config.GetSection("database");
+
+            Host = configSection["host"];
+            Name = configSection["name"];
+            string password = configSection["password"];
+            string username = configSection["username"];
+
+            //Npgsql connection string
+            connectionString = $"Host={Host};Username={username};Password={password};Database={Name}";
         }
 
+        /// <summary>
+        /// Gets an opened <see cref="NpgsqlConnection"/> object that uses currect <see cref="connectionString"/>.
+        /// </summary>
+        /// <returns></returns>
         public NpgsqlConnection GetOpenedConnection()
         {
-            var con = new NpgsqlConnection(connstr);
+            var con = new NpgsqlConnection(connectionString);
             con.Open();
             return con;
         }

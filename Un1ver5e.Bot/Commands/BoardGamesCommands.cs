@@ -9,17 +9,17 @@ namespace Un1ver5e.Bot.Commands
     [Name("🎲 Настолки"), Description("Команды для настолок!")]
     public partial class BoardGamesCommands : DiscordModuleBase
     {
-        public BoardGamesCommands(DiceThrower service)
+        public BoardGamesCommands(DiceService service)
         {
-            Service = service;
+            this.service = service;
         }
 
-        public DiceThrower Service { get; set; }
+        public DiceService service { get; set; }
 
         [Command("throw", "dice"), Description("Бросает куб, заданный текстовым описанием.")]
         public DiscordCommandResult ThrowCommand(string query)
         {
-            string reply = Service.ThrowByQuery(query).ToString();
+            string reply = service.ThrowByQuery(query).ToString();
 
             LocalEmbed embed = new()
             {
@@ -39,7 +39,7 @@ namespace Un1ver5e.Bot.Commands
         [Command("listdice"), Description("Показывает кешированные кубы.")]
         public DiscordCommandResult ListDiceCommand()
         {
-            string reply = string.Join('\n', Service.GetCacheSnapshot().Keys).AsCodeBlock();
+            string reply = string.Join('\n', service.GetCacheSnapshot().Keys).AsCodeBlock();
 
             LocalEmbed embed = new()
             {
@@ -53,9 +53,23 @@ namespace Un1ver5e.Bot.Commands
                     new LocalEmbedField()
                     {
                         Name = "Кеширование кубов:",
-                        Value = Service.AlwaysCacheDice ? ":green_circle:" : ":red_circle:"
+                        Value = service.AlwaysCacheDice.AsEmoji().ToString()
                     }
                 }
+            };
+
+            return Reply(embed);
+        }
+
+        [RequireBotOwner]
+        [Command("cachedice"), Description("Переключает кеширование кубов.")]
+        public DiscordCommandResult CacheDiceCommand()
+        {
+            service.AlwaysCacheDice = !service.AlwaysCacheDice;//Switching
+
+            LocalEmbed embed = new()
+            {
+                Description = $"Кеширование кубов: {service.AlwaysCacheDice.AsEmoji()}"
             };
 
             return Reply(embed);

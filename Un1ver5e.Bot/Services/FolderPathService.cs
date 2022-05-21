@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace Un1ver5e.Bot.Utilities
 {
-    public class FolderPathProvider
+    public class FolderPathService
     {
-
+        /// <summary>
+        /// Initializes folder specified by their paths.
+        /// </summary>
         public IEnumerable<string> Paths
         {
             init
@@ -24,6 +27,11 @@ namespace Un1ver5e.Bot.Utilities
         }
 
         private Dictionary<string, string> paths = new();
+
+        public FolderPathService(IConfiguration config)
+        {
+            Paths = config.GetSection("folders").Get<string[]>();
+        }
 
         public string this[string query]
         {
