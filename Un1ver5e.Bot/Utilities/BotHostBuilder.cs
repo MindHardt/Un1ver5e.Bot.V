@@ -2,10 +2,9 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Un1ver5e.Bot.BoardGames.Core;
 using Serilog.Core;
 using Microsoft.Extensions.Configuration;
-using Un1ver5e.Bot.Database;
+using Un1ver5e.Bot.Services;
 
 namespace Un1ver5e.Bot.Utilities
 {

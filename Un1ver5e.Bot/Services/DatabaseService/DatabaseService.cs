@@ -2,7 +2,7 @@
 using Npgsql;
 using System.Diagnostics;
 
-namespace Un1ver5e.Bot.Database
+namespace Un1ver5e.Bot.Services
 {
     public class DatabaseService
     {
@@ -24,7 +24,7 @@ namespace Un1ver5e.Bot.Database
         }
 
         /// <summary>
-        /// Gets an opened <see cref="NpgsqlConnection"/> object that uses currect <see cref="connectionString"/>.
+        /// Gets an opened <see cref="NpgsqlConnection"/> object that uses currect <see cref="connectionString"/>. This should be disposed.
         /// </summary>
         /// <returns></returns>
         public NpgsqlConnection GetOpenedConnection()
@@ -35,7 +35,7 @@ namespace Un1ver5e.Bot.Database
         }
 
         /// <summary>
-        /// Gets approximate ping of a DB query.
+        /// Gets approximate latency of a database query.
         /// </summary>
         /// <returns></returns>
         public async ValueTask<TimeSpan> GetPing()
@@ -57,8 +57,9 @@ namespace Un1ver5e.Bot.Database
 
             return sw.Elapsed;
         }
+
         /// <summary>
-        /// Gets the size of the DB.
+        /// Gets the size of the database, in bytes.
         /// </summary>
         /// <returns></returns>
         public async ValueTask<long> GetSize()

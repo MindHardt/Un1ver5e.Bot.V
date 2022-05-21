@@ -1,7 +1,7 @@
 ﻿using Disqord;
 using Disqord.Bot;
 using Qmmands;
-using Un1ver5e.Bot.BoardGames.Core;
+using Un1ver5e.Bot.Services;
 using Un1ver5e.Bot.Utilities;
 
 namespace Un1ver5e.Bot.Commands
@@ -14,7 +14,7 @@ namespace Un1ver5e.Bot.Commands
             this.service = service;
         }
 
-        public DiceService service { get; set; }
+        private readonly DiceService service;
 
         [Command("throw", "dice"), Description("Бросает куб, заданный текстовым описанием.")]
         public DiscordCommandResult ThrowCommand(string query)

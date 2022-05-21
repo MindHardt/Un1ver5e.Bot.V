@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Un1ver5e.Bot.Utilities
+namespace Un1ver5e.Bot.Services
 {
     public class FolderPathService
     {
@@ -26,7 +26,7 @@ namespace Un1ver5e.Bot.Utilities
             }
         }
 
-        private Dictionary<string, string> paths = new();
+        private readonly Dictionary<string, string> paths = new();
 
         public FolderPathService(IConfiguration config)
         {
