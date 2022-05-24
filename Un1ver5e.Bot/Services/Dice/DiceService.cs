@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System.Text.RegularExpressions;
 
-namespace Un1ver5e.Bot.Services
+namespace Un1ver5e.Bot.Services.Dice
 {
     public class DiceService
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System.Diagnostics;
+using Un1ver5e.Bot.Services.Database;
 
 namespace Un1ver5e.Bot.Services
 {
@@ -18,21 +19,17 @@ namespace Un1ver5e.Bot.Services
             Name = configSection["name"];
             string password = configSection["password"];
             string username = configSection["username"];
+            string maxPool = configSection["max_pool_size"];
 
             //Npgsql connection string
-            connectionString = $"Host={Host};Username={username};Password={password};Database={Name}";
+            connectionString = $"Host={Host};Username={username};Password={password};Database={Name};Maximum Pool Size={maxPool}";
         }
 
         /// <summary>
-        /// Gets an opened <see cref="NpgsqlConnection"/> object that uses currect <see cref="connectionString"/>. This should be disposed.
+        /// Gets a <see cref="NpgsqlConnection"/> object that uses currect <see cref="connectionString"/>. This should be disposed.
         /// </summary>
         /// <returns></returns>
-        public NpgsqlConnection GetOpenedConnection()
-        {
-            var con = new NpgsqlConnection(connectionString);
-            con.Open();
-            return con;
-        }
+        public NpgsqlConnection GetConnection() => new NpgsqlConnection(connectionString);
 
         /// <summary>
         /// Gets approximate latency of a database query.
@@ -42,8 +39,9 @@ namespace Un1ver5e.Bot.Services
         {
             Stopwatch sw = new();
 
-            using (var conn = GetOpenedConnection())
+            using (var conn = GetConnection())
             {
+                await conn.OpenAsync();
                 NpgsqlCommand command = new()
                 {
                     Connection = conn,
@@ -64,7 +62,8 @@ namespace Un1ver5e.Bot.Services
         /// <returns></returns>
         public async ValueTask<long> GetSize()
         {
-            using var conn = GetOpenedConnection();
+            using var conn = GetConnection();
+            await conn.OpenAsync();
             NpgsqlCommand command = new()
             {
                 Connection = conn,
@@ -72,6 +71,16 @@ namespace Un1ver5e.Bot.Services
             };
 
             return (long)(await command.ExecuteScalarAsync())!;
+        }
+
+        public async ValueTask Pull(IDatabaseEntity entity)
+        {
+            await entity.Pull(this);
+        }
+
+        public async ValueTask Push(IDatabaseEntity entity)
+        {
+            await entity.Push(this);
         }
 
     }

@@ -26,10 +26,11 @@ namespace Un1ver5e.Bot.Commands
 
             foreach (Module module in modules)
             {
+                int commandNameOffset = module.Aliases.Any() ? module.Aliases.First().Length + 1 : 0;
                 LocalEmbedField field = new()
                 {
                     Name = $"**{module.Name}** ({string.Join(", ", module.Aliases.Select(a => $"`{a}`"))})",
-                    Value = string.Join(", ", module.Commands.Select(c => $"`{c.Name}`"))
+                    Value = string.Join(", ", module.Commands.Select(c => $"`{c.Name[commandNameOffset..]}`"))
                 };
 
                 moduleDescriptions.Add(field);

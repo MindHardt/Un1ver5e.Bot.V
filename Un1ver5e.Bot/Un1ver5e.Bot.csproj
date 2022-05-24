@@ -19,7 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BoardGames\" />
-    <Folder Include="Services\TagService\" />
-    <Folder Include="Services\PomodoroService\" />
+    <Folder Include="Services\Tags\" />
+    <Folder Include="Services\Pomodoro\" />
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@ using Serilog;
 using Serilog.Core;
 using Microsoft.Extensions.Configuration;
 using Un1ver5e.Bot.Services;
+using Un1ver5e.Bot.Services.Dice;
 
 namespace Un1ver5e.Bot.Utilities
 {
@@ -40,9 +41,16 @@ namespace Un1ver5e.Bot.Utilities
                 })
                 .ConfigureDiscordBot((context, bot) =>
                 {
+                    IConfigurationSection config =
+#if DEBUG
+                    context.Configuration.GetSection("discord_config_debug");
+#else
+                    context.Configuration.GetSection("discord_config_release");
+#endif
+
                     string splash = context.Configuration.GetSection("splashes").Get<string[]>().GetRandomElement();
-                    string token = context.Configuration["discord_token"];
-                    string[] prefixes = context.Configuration.GetSection("prefixes").Get<string[]>();
+                    string token = config["token"];
+                    string[] prefixes = config.GetSection("prefixes").Get<string[]>();
 
                     bot.Activities = new Disqord.Gateway.LocalActivity[] { new(splash, Disqord.ActivityType.Watching) };
                     bot.Token = token;

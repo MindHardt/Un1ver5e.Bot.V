@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Un1ver5e.Bot.Services
+namespace Un1ver5e.Bot.Services.Dice
 {
     public class Dice
     {

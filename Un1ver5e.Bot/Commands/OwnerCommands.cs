@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 using Disqord.Extensions.Interactivity;
 using Disqord.Gateway;
 using Serilog.Core;
+using Un1ver5e.Bot.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Un1ver5e.Bot.Services.Database;
 
 namespace Un1ver5e.Bot.Commands
 {
@@ -66,6 +69,14 @@ namespace Un1ver5e.Bot.Commands
             {
                 await Reply("Время вышло!");
             }
+        }
+        
+        [Command("test")]
+        public async ValueTask<DiscordCommandResult> TestCommand()
+        {
+            IUser user = Context.Author;
+
+            return Reply("Успешно");
         }
     }
 }
