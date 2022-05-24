@@ -5,14 +5,14 @@ using System.Text.RegularExpressions;
 
 namespace Un1ver5e.Bot.Services.Dice
 {
-    public class DiceService
+    public class DefaultDiceService : IDiceService
     {
         /// <summary>
         /// Default constructor for HostBuilder.
         /// </summary>
         /// <param name="config"></param>
         /// <param name="random"></param>
-        public DiceService(IConfiguration config, Random random)
+        public DefaultDiceService(IConfiguration config, Random random)
         {
             IConfigurationSection configSection = config.GetSection("dice_service");
 
@@ -25,7 +25,7 @@ namespace Un1ver5e.Bot.Services.Dice
         /// </summary>
         public Random Randomizer { get; set; } = Random.Shared;
         /// <summary>
-        /// Defines whether all the created Dice should be cached. Cache helps retrieving <see cref="Dice"/> via <see cref="Dice.FromText(string)"/> method faster. Defaults to <see cref="true"/>.
+        /// Defines whether all the created Dice should be cached. Cache helps retrieving <see cref="DefaultDice"/> via <see cref="DefaultDice.FromText(string)"/> method faster. Defaults to <see cref="true"/>.
         /// </summary>
         public bool AlwaysCacheDice { get; set; } = true;
         /// <summary>
@@ -44,12 +44,12 @@ namespace Un1ver5e.Bot.Services.Dice
         }
 
         /// <summary>
-        /// Creates <see cref="Dice"/> from its text form, allowing modifyer (i.e. 2d6+3) and throws it.
+        /// Creates <see cref="DefaultDice"/> from its text form, allowing modifyer (i.e. 2d6+3) and throws it.
         /// </summary>
         /// <param name="text"></param>
         /// <returns>A result of the throw.</returns>
         /// <exception cref="ArgumentException"></exception>
-        public ThrowResult ThrowByQuery(string text)
+        public IThrowResult ThrowByQuery(string text)
         {
             Regex regex = new("(?<Dice>\\d*[Dd]\\d+)(?<Modifyer>[+-]\\d+)?");
 
@@ -65,7 +65,7 @@ namespace Un1ver5e.Bot.Services.Dice
                 modifyer = int.Parse(modifyerString);
             }
 
-            Dice dice = ParseText(match.Groups["Dice"].Value);
+            IDice dice = ParseText(match.Groups["Dice"].Value);
 
             TryCacheDice(dice);
 
@@ -84,12 +84,12 @@ namespace Un1ver5e.Bot.Services.Dice
         }
 
         /// <summary>
-        /// Parses correct text into a <see cref="Dice"/> object.
+        /// Parses correct text into a <see cref="DefaultDice"/> object.
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        private static Dice ParseText(string text)
+        private static IDice ParseText(string text)
         {
             string[] numbers = text.ToLower().Split('d');
 
@@ -110,17 +110,17 @@ namespace Un1ver5e.Bot.Services.Dice
 
             if (countCorrect == false || maxValueCorrect == false) throw new ArgumentException("Некорректный текст дайса", nameof(text));
 
-            return new Dice(maxValue, count);
+            return new DefaultDice(maxValue, count);
         }
 
         //THE UNDERLYING PART IS RESPONSIBLE FOR DICE CACHE
-        private Dictionary<string, Dice> Cache { get; } = new Dictionary<string, Dice>();
+        private Dictionary<string, IDice> Cache { get; } = new Dictionary<string, IDice>();
 
         /// <summary>
         /// Tries to cache <paramref name="dice"/>. The result depends on <see cref="AlwaysCacheDice"/>.
         /// </summary>
         /// <param name="dice"></param>
-        public void TryCacheDice(Dice dice)
+        public void TryCacheDice(IDice dice)
         {
             if (AlwaysCacheDice) CacheDice(dice);
         }
@@ -129,15 +129,15 @@ namespace Un1ver5e.Bot.Services.Dice
         /// Adds this <paramref name="dice"/> to <see cref="Cache"/>.
         /// </summary>
         /// <param name="dice"></param>
-        public void CacheDice(Dice dice)
+        public void CacheDice(IDice dice)
         {
             Cache[dice.ToString()!] = dice;
         }
 
         /// <summary>
-        /// Get current state of <see cref="Dice"/> cache.
+        /// Get current state of <see cref="DefaultDice"/> cache.
         /// </summary>
         /// <returns></returns>
-        public IReadOnlyDictionary<string, Dice> GetCacheSnapshot() => Cache;
+        public IReadOnlyDictionary<string, IDice> GetCacheSnapshot() => Cache;
     }
 }

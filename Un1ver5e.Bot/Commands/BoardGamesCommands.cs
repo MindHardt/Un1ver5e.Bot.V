@@ -10,17 +10,17 @@ namespace Un1ver5e.Bot.Commands
     [Name("🎲 Настолки"), Description("Команды для настолок!")]
     public partial class BoardGamesCommands : DiscordModuleBase
     {
-        public BoardGamesCommands(DiceService service)
+        public BoardGamesCommands(IDiceService service)
         {
             this.service = service;
         }
 
-        private readonly DiceService service;
+        private readonly IDiceService service;
 
         [Command("throw", "dice"), Description("Бросает куб, заданный текстовым описанием.")]
         public DiscordCommandResult ThrowCommand(string query)
         {
-            string reply = service.ThrowByQuery(query).ToString();
+            string reply = service.ThrowByQuery(query).ToString()!;
 
             LocalEmbed embed = new()
             {
@@ -37,45 +37,12 @@ namespace Un1ver5e.Bot.Commands
             return Reply(embed);
         }
 
-        [Command("listdice"), Description("Показывает кешированные кубы.")]
-        public DiscordCommandResult ListDiceCommand()
+        [RequireGuild]
+        [Command("challenge"), Description("Решаем дела по-мужски.")]
+        public DiscordCommandResult Challenge(IMember mem)
         {
-            string reply = string.Join('\n', service.GetCacheSnapshot().Keys).AsCodeBlock();
-
-            LocalEmbed embed = new()
-            {
-                Fields = new List<LocalEmbedField>()
-                {
-                    new LocalEmbedField()
-                    {
-                        Name = "Список кешированных кубов:",
-                        Value = reply
-                    },
-                    new LocalEmbedField()
-                    {
-                        Name = "Кеширование кубов:",
-                        Value = service.AlwaysCacheDice.AsEmoji().ToString()
-                    }
-                }
-            };
-
-            return Reply(embed);
+            
+            return Reply();
         }
-
-        [RequireBotOwner]
-        [Command("cachedice"), Description("Переключает кеширование кубов.")]
-        public DiscordCommandResult CacheDiceCommand()
-        {
-            service.AlwaysCacheDice = !service.AlwaysCacheDice;//Switching
-
-            LocalEmbed embed = new()
-            {
-                Description = $"Кеширование кубов: {service.AlwaysCacheDice.AsEmoji()}"
-            };
-
-            return Reply(embed);
-        }
-
-
     }
 }

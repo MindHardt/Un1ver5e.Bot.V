@@ -35,7 +35,7 @@ namespace Un1ver5e.Bot.Utilities
                     //TODO: Make all singleton services use config && name them properly.
                     services.AddSingleton<Random>();
                     services.AddSingleton<LoggingLevelSwitch>();
-                    services.AddSingleton<DiceService>();
+                    services.AddSingleton<DefaultDiceService>();
                     services.AddSingleton<FolderPathService>();
                     services.AddSingleton<DatabaseService>();
                 })
