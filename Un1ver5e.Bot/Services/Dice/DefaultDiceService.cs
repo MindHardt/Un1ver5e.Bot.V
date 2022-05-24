@@ -1,6 +1,4 @@
-﻿using Disqord.Bot.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
 using System.Text.RegularExpressions;
 
 namespace Un1ver5e.Bot.Services.Dice

@@ -1,9 +1,7 @@
 ﻿using Disqord;
 using Disqord.Bot;
 using Qmmands;
-using Un1ver5e.Bot.Services;
 using Un1ver5e.Bot.Services.Dice;
-using Un1ver5e.Bot.Utilities;
 
 namespace Un1ver5e.Bot.Commands
 {

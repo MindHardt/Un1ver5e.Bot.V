@@ -1,9 +1,9 @@
 ﻿using Disqord.Bot.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Core;
-using Microsoft.Extensions.Configuration;
 using Un1ver5e.Bot.Services;
 using Un1ver5e.Bot.Services.Dice;
 

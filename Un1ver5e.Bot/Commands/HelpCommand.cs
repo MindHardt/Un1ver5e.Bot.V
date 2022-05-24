@@ -1,13 +1,7 @@
 ﻿using Disqord;
 using Disqord.Bot;
 using Qmmands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Un1ver5e.Bot.Commands.Attributes;
-using Un1ver5e.Bot.Utilities;
 
 namespace Un1ver5e.Bot.Commands
 {
@@ -27,10 +21,19 @@ namespace Un1ver5e.Bot.Commands
             foreach (Module module in modules)
             {
                 int commandNameOffset = module.Aliases.Any() ? module.Aliases.First().Length + 1 : 0;
+
+                string[] aliases = module.Aliases
+                    .Select(a => $"`{a}`")
+                    .ToArray();
+                string[] commands = module.Commands
+                    .OrderBy(c => c.Name)
+                    .Select(c => $"`{c.Name[commandNameOffset..]}`")
+                    .ToArray();
+
                 LocalEmbedField field = new()
                 {
-                    Name = $"**{module.Name}** ({string.Join(", ", module.Aliases.Select(a => $"`{a}`"))})",
-                    Value = string.Join(", ", module.Commands.Select(c => $"`{c.Name[commandNameOffset..]}`"))
+                    Name = $"**{module.Name}** ({string.Join(", ", aliases)})",
+                    Value = string.Join(", ", commands)
                 };
 
                 moduleDescriptions.Add(field);
