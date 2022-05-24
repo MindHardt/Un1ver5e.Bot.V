@@ -33,11 +33,13 @@ namespace Un1ver5e.Bot.Utilities
                 .ConfigureServices((context, services) =>
                 {
                     //TODO: Make all singleton services use config && name them properly.
-                    services.AddSingleton<Random>();
-                    services.AddSingleton<LoggingLevelSwitch>();
-                    services.AddSingleton<DefaultDiceService>();
-                    services.AddSingleton<FolderPathService>();
-                    services.AddSingleton<DatabaseService>();
+                    services
+                    .AddSingleton<Random>()
+                    .AddSingleton<LoggingLevelSwitch>()
+                    .AddSingleton<DefaultDiceService>()
+                    .AddScoped<IDiceService, DefaultDiceService>()
+                    .AddSingleton<FolderPathService>()
+                    .AddSingleton<DatabaseService>();
                 })
                 .ConfigureDiscordBot((context, bot) =>
                 {
