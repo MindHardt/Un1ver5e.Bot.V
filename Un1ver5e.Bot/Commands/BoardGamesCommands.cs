@@ -37,12 +37,15 @@ namespace Un1ver5e.Bot.Commands
 
         [RequireGuild]
         [Command("challenge", "fight"), Description("Решаем дела по-мужски.")]
-        public DiscordCommandResult Challenge(IMember opponent)
+        public DiscordCommandResult Challenge(IMember opponent, string dice = "1d100")
         {
             IMember author = (IMember)Context.Author;
 
-            IThrowResult resultAuthor = service.ThrowByQuery("1d100");
-            IThrowResult resultOpponent = service.ThrowByQuery("1d100");
+            if (opponent.IsBot)     return Reply(new LocalEmbed().WithDescription("Не трогай шайтан-машину!"));
+            if (author == opponent) return Reply(new LocalEmbed().WithDescription("Не делай этого с собой! Тебе есть ради чего жить!"));
+
+            IThrowResult resultAuthor = service.ThrowByQuery(dice);
+            IThrowResult resultOpponent = service.ThrowByQuery(dice);
 
             IMember? winner = Math.Sign(resultAuthor.GetCompleteSum().CompareTo(resultOpponent.GetCompleteSum())) switch
             {
@@ -55,6 +58,8 @@ namespace Un1ver5e.Bot.Commands
             string title = winner is not null ?
                 $"Победил(а) {winner.Nick ?? winner.Name}!" :
                 "Ничья!";
+
+            IMember thubmnail = winner ?? (IMember)Context.Bot.CurrentUser;
 
             LocalEmbed embed = new()
             {
@@ -74,7 +79,7 @@ namespace Un1ver5e.Bot.Commands
                     }
                 },
                 Title = title,
-                ThumbnailUrl = winner.GetGuildAvatarUrl()
+                ThumbnailUrl = thubmnail.Nick ?? thubmnail.Name
             };
 
             return Reply(embed);
