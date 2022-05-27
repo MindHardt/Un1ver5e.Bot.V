@@ -59,7 +59,7 @@ namespace Un1ver5e.Bot.Commands
                 $"Победил(а) {winner.Nick ?? winner.Name}!" :
                 "Ничья!";
 
-            IMember thubmnail = winner ?? (IMember)Context.Bot.CurrentUser;
+            string thumbnail = (winner ?? (IMember)Context.Bot.CurrentUser).GetGuildAvatarUrl();
 
             LocalEmbed embed = new()
             {
@@ -79,7 +79,7 @@ namespace Un1ver5e.Bot.Commands
                     }
                 },
                 Title = title,
-                ThumbnailUrl = thubmnail.Nick ?? thubmnail.Name
+                ThumbnailUrl = thumbnail
             };
 
             return Reply(embed);

@@ -6,6 +6,7 @@ using Serilog;
 using Serilog.Core;
 using Un1ver5e.Bot.Services;
 using Un1ver5e.Bot.Services.Dice;
+using Un1ver5e.Bot.Services.Graphics;
 
 namespace Un1ver5e.Bot.Utilities
 {
@@ -32,12 +33,16 @@ namespace Un1ver5e.Bot.Utilities
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    //TODO: Make all singleton services use config && name them properly.
                     services
                     .AddSingleton<Random>()
                     .AddSingleton<LoggingLevelSwitch>()
+
                     .AddSingleton<DefaultDiceService>()
                     .AddScoped<IDiceService, DefaultDiceService>()
+
+                    .AddSingleton<ImageSharpGraphics>()
+                    .AddScoped<IGraphics, ImageSharpGraphics>()
+
                     .AddSingleton<FolderPathService>()
                     .AddSingleton<DatabaseService>();
                 })
@@ -57,6 +62,11 @@ namespace Un1ver5e.Bot.Utilities
                     bot.Activities = new Disqord.Gateway.LocalActivity[] { new(splash, Disqord.ActivityType.Watching) };
                     bot.Token = token;
                     bot.Prefixes = prefixes;
+                })
+                .UseDefaultServiceProvider(config =>
+                {
+                    config.ValidateOnBuild = true;
+                    config.ValidateScopes = true;
                 })
                 .Build();
         }

@@ -52,5 +52,39 @@ namespace Un1ver5e.Bot.Commands
 
             return Reply(message);
         }
+
+        [Command("help")]
+        public DiscordCommandResult HelpCommand(string command)
+        {
+            CommandService commandService = (CommandService)Context.Services.GetService(typeof(CommandService))!;
+
+            IEnumerable<Command> commands = commandService.GetAllModules()
+                .Where(m => m.Attributes.All(a => a is not DisableHelpAttribute))
+                .SelectMany(m => m.Commands)
+                .Where(c => c.RunChecksAsync(Context).GetAwaiter().GetResult().IsSuccessful)
+                .Where(c => c.Aliases.Append(c.Name).Contains(command));
+
+            Command match = commands.Single();
+
+            LocalMessage message = new()
+            {
+                Embeds = new List<LocalEmbed>()
+                {
+                    new LocalEmbed()
+                    {
+                        Fields = new List<LocalEmbedField>()
+                        {
+                            new LocalEmbedField()
+                            {
+                                Name = match.Name,
+                                Value = match.Description
+                            }
+                        }
+                    }
+                }
+            };
+
+            return Reply(message);
+        }
     }
 }

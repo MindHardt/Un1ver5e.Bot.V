@@ -5,6 +5,7 @@ using Qmmands;
 using System.Diagnostics;
 using Un1ver5e.Bot.Services;
 using Un1ver5e.Bot.Utilities;
+using Un1ver5e.Bot.Views;
 using Un1ver5e.Commands.Attributes;
 
 namespace Un1ver5e.Commands
@@ -96,25 +97,14 @@ namespace Un1ver5e.Commands
                 {
                     Text = "Все оценки бота случайны."
                 },
-                Fields = new List<LocalEmbedField>()
-                {
-                    new LocalEmbedField()
-                    {
-                        Name = "Оценка от бота:",
-                        Value = rateMessage
-                    }
-                }
+                Description = rateMessage
             };
 
-            LocalMessage respond = new()
-            {
-                Embeds = new List<LocalEmbed>()
-                {
-                    embed
-                },
-            };
+            LocalMessage respond = new LocalMessage()
+                .WithEmbeds(embed)
+                .WithReply(Context.Message.ReferencedMessage.Value.Id);
 
-            return Response(respond.WithReply(Context.Message.ReferencedMessage.Value.Id));
+            return Response(respond);
         }
 
         [Command("stealemoji", "steal"), Description("Ваш эмоджи теперь мой")]
@@ -187,6 +177,13 @@ namespace Un1ver5e.Commands
             };
 
             return Reply(embed);
+        }
+
+
+        [Command("test")]
+        public async ValueTask<DiscordCommandResult> TestCommand()
+        {
+            return View(new TestView());
         }
     }
 

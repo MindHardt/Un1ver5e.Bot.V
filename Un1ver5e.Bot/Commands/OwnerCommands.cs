@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Qmmands;
 using Serilog.Core;
 using Un1ver5e.Bot.Utilities;
+using Un1ver5e.Bot.Views;
 
 namespace Un1ver5e.Bot.Commands
 {
@@ -16,11 +17,13 @@ namespace Un1ver5e.Bot.Commands
     {
         private readonly IHost host;
         private readonly LoggingLevelSwitch logswitch;
+        private readonly Random random;
 
-        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch)
+        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch, Random random)
         {
             this.host = host;
             this.logswitch = logswitch;
+            this.random = random;
         }
 
         [Command("setloglevel")]
@@ -66,14 +69,6 @@ namespace Un1ver5e.Bot.Commands
             {
                 await Reply("Время вышло!");
             }
-        }
-
-        [Command("test")]
-        public async ValueTask<DiscordCommandResult> TestCommand()
-        {
-            IUser user = Context.Author;
-
-            return Reply("Успешно");
         }
     }
 }
