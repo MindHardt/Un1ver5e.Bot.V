@@ -1,6 +1,8 @@
 ﻿using Disqord;
 using Disqord.Bot;
+using Disqord.Extensions.Interactivity.Menus;
 using Qmmands;
+using Un1ver5e.Bot.BoardGames.TicTacToe;
 using Un1ver5e.Bot.Services.Dice;
 
 namespace Un1ver5e.Bot.Commands
@@ -83,6 +85,19 @@ namespace Un1ver5e.Bot.Commands
             };
 
             return Reply(embed);
+        }
+
+        [Command("ttt"), RequireGuild()]
+        public async ValueTask TestCommand(IMember opponent)
+        {
+            IMember author = (IMember)Context.Author;
+
+            DefaultMenu menu = new(new TttView(author, opponent))
+            {
+                AuthorId = null
+            };
+
+            await Bot.StartMenuAsync(Context.ChannelId, menu);
         }
     }
 }

@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Qmmands;
 using Serilog.Core;
 using Un1ver5e.Bot.Utilities;
-using Un1ver5e.Bot.Views;
 
 namespace Un1ver5e.Bot.Commands
 {

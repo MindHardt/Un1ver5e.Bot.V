@@ -5,7 +5,6 @@ using Qmmands;
 using System.Diagnostics;
 using Un1ver5e.Bot.Services;
 using Un1ver5e.Bot.Utilities;
-using Un1ver5e.Bot.Views;
 using Un1ver5e.Commands.Attributes;
 
 namespace Un1ver5e.Commands
@@ -180,10 +179,10 @@ namespace Un1ver5e.Commands
         }
 
 
-        [Command("test")]
-        public async ValueTask<DiscordCommandResult> TestCommand()
+        [Command("test"), RequireGuild()]
+        public DiscordCommandResult TestCommand()
         {
-            return View(new TestView());
+            return Reply("Сись");
         }
     }
 

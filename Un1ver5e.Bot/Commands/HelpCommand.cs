@@ -66,20 +66,19 @@ namespace Un1ver5e.Bot.Commands
 
             Command match = commands.Single();
 
+            string moduleNames = match.Module.Aliases.Any() ? $"<{string.Join("|", match.Module.Aliases)}>" : string.Empty;
+            string commandNames = $"<{string.Join("|", match.Aliases)}>";
+
+            string usage = $"Использование: **{moduleNames} {commandNames}**";
+
             LocalMessage message = new()
             {
                 Embeds = new List<LocalEmbed>()
                 {
                     new LocalEmbed()
                     {
-                        Fields = new List<LocalEmbedField>()
-                        {
-                            new LocalEmbedField()
-                            {
-                                Name = match.Name,
-                                Value = match.Description
-                            }
-                        }
+                        Title = $"`{match.Name}` > {match.Description}",
+                        Description = usage
                     }
                 }
             };
