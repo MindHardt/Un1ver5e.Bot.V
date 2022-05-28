@@ -111,6 +111,7 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
 
             await Menu.ApplyChangesAsync();
             Menu.Stop();
+            await Menu.DisposeAsync();
         }
 
         private void RestoreButtons()
