@@ -1,4 +1,5 @@
 ﻿using Disqord;
+using Disqord.Extensions.Interactivity.Menus;
 
 namespace Un1ver5e.Bot.Utilities
 {
@@ -35,5 +36,48 @@ namespace Un1ver5e.Bot.Utilities
         /// <param name="value"></param>
         /// <returns></returns>
         public static LocalEmoji AsEmoji(this bool value) => value ? LocalEmoji.FromString(":green_circle:") : LocalEmoji.FromString(":red_circle:");
+
+        /// <summary>
+        /// Gets <paramref name="member"/>'s guild displayed name.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns>This guilds nick if specified, otherwise default name.</returns>
+        public static string GetDisplayName(this IMember member) => member.Nick ?? member.Name;
+
+        /// <summary>
+        /// Formats <paramref name="number"/> as a modifyer. 
+        /// <para>-4 -> "-4"</para>
+        /// <para>4 -> "+4"</para>
+        /// <para>0 -> "+0"</para>
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public static string AsModifyer(this int number) => number >= 0 ? $"+{number}" : number.ToString();
+
+        /// <summary>
+        /// Replaces <paramref name="view"/>s components with ones specified in <paramref name="components"/>.
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public static ViewBase ReplaceComponents(this ViewBase view, IEnumerable<ViewComponent> components)
+        {
+            view.ClearComponents();
+
+            foreach(ViewComponent component in components)
+            {
+                view.AddComponent(component);
+            }
+
+            return view;
+        }
+
+        /// <summary>
+        /// Replaces <paramref name="view"/>s components with ones specified in <paramref name="components"/>.
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public static ViewBase ReplaceComponents(this ViewBase view, params ViewComponent[] components) => ReplaceComponents(view, (IEnumerable<ViewComponent>)components);
     }
 }

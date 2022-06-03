@@ -8,13 +8,11 @@ namespace Un1ver5e.Bot.Commands
     [Name("🎨 Графика"), Description("Бот рисует, вау!")]
     public partial class GraphicCommands : DiscordModuleBase
     {
-        public GraphicCommands(IGraphics service, Random random)
+        public GraphicCommands(IGraphics service)
         {
             this.service = service;
-            this.random = random;
         }
 
-        private readonly Random random;
         private readonly IGraphics service;
 
         [Command("color", "hex"), Description("Смари какой цвет.")]
@@ -23,9 +21,15 @@ namespace Un1ver5e.Bot.Commands
             Stream imageStream = await service.GetColorImage(color);
             LocalAttachment imageAttachment = new LocalAttachment(imageStream, "color.png");
 
-            LocalMessage msg = new LocalMessage().AddAttachment(imageAttachment);
+            string colorName = color.ToString();
+            LocalMessage msg = new LocalMessage()
+                .WithContent(colorName)
+                .AddAttachment(imageAttachment);
 
             return Reply(msg);
         }
+
+        [Command("color", "hex"), Description("Смари какой цвет.")]
+        public ValueTask<DiscordCommandResult> ColorCommand() => ColorCommand(Color.Random);
     }
 }

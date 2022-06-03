@@ -1,10 +1,6 @@
 ﻿using Disqord;
 using Disqord.Extensions.Interactivity.Menus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Un1ver5e.Bot.Utilities;
 
 namespace Un1ver5e.Bot.BoardGames.TicTacToe
 {
@@ -110,8 +106,6 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
             }
 
             await Menu.ApplyChangesAsync();
-            Menu.Stop();
-            await Menu.DisposeAsync();
         }
 
         private void RestoreButtons()
@@ -135,12 +129,7 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
                     };
                 });
 
-            ClearComponents();
-
-            foreach (ButtonViewComponent button in newButtons)
-            {
-                AddComponent(button);
-            }
+            this.ReplaceComponents(newButtons);
         }
 
         private bool CheckDraw()
@@ -159,19 +148,19 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
 
             return false;
         }
-        private bool CheckRow(int number, out IMember? winner)
+        private bool CheckRow(int index, out IMember? winner)
         {
             winner = null;
-            if ((field[number].HasValue
-                && field[number + 1].HasValue
-                && field[number + 2].HasValue) == false)
+            if ((field[index].HasValue
+                && field[index + 1].HasValue
+                && field[index + 2].HasValue) == false)
                 return false;
 
-            if (field[number]!.Value != field[number + 1]!.Value ||
-                field[number + 1]!.Value != field[number + 2]!.Value)
+            if (field[index]!.Value != field[index + 1]!.Value ||
+                field[index + 1]!.Value != field[index + 2]!.Value)
                 return false;
 
-            winner = field[number]!.Value ? cross : nil;
+            winner = field[index]!.Value ? cross : nil;
 
             return true;
         }
@@ -216,7 +205,7 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
                 return false;
 
             if (field[6]!.Value != field[4]!.Value ||
-                field[4]!.Value != field[8]!.Value)
+                field[4]!.Value != field[2]!.Value)
                 return false;
 
             winner = field[6]!.Value ? cross : nil;

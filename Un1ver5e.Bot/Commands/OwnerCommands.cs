@@ -5,6 +5,11 @@ using Disqord.Gateway;
 using Microsoft.Extensions.Hosting;
 using Qmmands;
 using Serilog.Core;
+using Un1ver5e.Bot.BoardGames.Catan.Entities;
+using Un1ver5e.Bot.BoardGames.Catan.Views;
+using Un1ver5e.Bot.Services;
+using Un1ver5e.Bot.Services.Database;
+using Un1ver5e.Bot.Services.Database.Entities;
 using Un1ver5e.Bot.Utilities;
 
 namespace Un1ver5e.Bot.Commands
@@ -16,13 +21,13 @@ namespace Un1ver5e.Bot.Commands
     {
         private readonly IHost host;
         private readonly LoggingLevelSwitch logswitch;
-        private readonly Random random;
+        private readonly FolderPathService paths;
 
-        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch, Random random)
+        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch, Random random, ApplicationContext dbcontext = null, FolderPathService paths = null)
         {
             this.host = host;
             this.logswitch = logswitch;
-            this.random = random;
+            this.paths = paths;
         }
 
         [Command("setloglevel")]
@@ -68,6 +73,22 @@ namespace Un1ver5e.Bot.Commands
             {
                 await Reply("Время вышло!");
             }
+        }
+
+        [Command("dbsnap"), RequirePrivate]
+        public DiscordCommandResult DBSnap()
+        {
+            Stream db = File.Open(paths["Database"] + "/mo.db", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+            LocalMessage msg = new()
+            {
+                Attachments =
+                {
+                    new(db, $"snapshot_{DateTime.Now}.db")
+                }
+            };
+
+            return Reply(msg);
         }
     }
 }

@@ -14,19 +14,25 @@ namespace Un1ver5e.Commands
     {
         private readonly Random random;
         private readonly IConfiguration config;
-        private readonly DatabaseService databaseService;
 
-        public BasicCommands(Random random, IConfiguration config, DatabaseService databaseService)
+        public BasicCommands(Random random, IConfiguration config)
         {
             this.random = random;
             this.config = config;
-            this.databaseService = databaseService;
         }
 
         [Command("splash"), Description("Сплеш из майнкрафта!")]
         public DiscordCommandResult SplashCommand()
         {
             return Reply(config.GetSection("splashes").Get<string[]>().GetRandomElement());
+        }
+
+        [Command("choose"), Description("Когда сложно выбрать самому")]
+        public DiscordCommandResult ChooseCommand(params string[] options)
+        {
+            string chosenOption = options.GetRandomElement();
+            
+            return Reply($"Я выбираю `{chosenOption}`.");
         }
 
         [Command("roll"), Description("Случайное число от 1 до 100")]
@@ -137,45 +143,7 @@ namespace Un1ver5e.Commands
         [Command("stats"), Description("Состояние бота")]
         public async ValueTask<DiscordCommandResult> StatsCommand()
         {
-            string doubleFormatter = "###,###,###,###.00"; //Precision up to 2 digits
-
-            string launchTimestamp = $"<t:{new DateTimeOffset(Process.GetCurrentProcess().StartTime).ToUnixTimeSeconds()}:R>";
-            string heapSize = $"{(GC.GetTotalMemory(true) / 1048576.0).ToString(doubleFormatter)} MBs";
-            TimeSpan dbLatency = await databaseService.GetPing();
-            TimeSpan socketLatency = DateTimeOffset.UtcNow - Context.Message.CreatedAt();
-
-            LocalEmbed embed = new()
-            {
-                Fields = new List<LocalEmbedField>()
-                {
-                    new LocalEmbedField()
-                    {
-                        Name = "Бот запущен",
-                        Value = launchTimestamp,
-                        IsInline = true
-                    },
-                    new LocalEmbedField()
-                    {
-                        Name = "Объем хипа",
-                        Value = heapSize,
-                        IsInline = false
-                    },
-                    new LocalEmbedField()
-                    {
-                        Name = "Пинг сокета",
-                        Value = $"{socketLatency.TotalMilliseconds.ToString(doubleFormatter)} мс",
-                        IsInline = true
-                    },
-                    new LocalEmbedField()
-                    {
-                        Name = "Пинг базы данных",
-                        Value = $"{dbLatency.TotalMilliseconds.ToString(doubleFormatter)} мс",
-                        IsInline = true
-                    },
-                }
-            };
-
-            return Reply(embed);
+            throw new NotImplementedException(); //TODO: redo this
         }
 
 

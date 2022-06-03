@@ -7,6 +7,9 @@ using Serilog.Core;
 using Un1ver5e.Bot.Services;
 using Un1ver5e.Bot.Services.Dice;
 using Un1ver5e.Bot.Services.Graphics;
+using Microsoft.EntityFrameworkCore;
+using Un1ver5e.Bot.Services.Database;
+using Disqord.Gateway;
 
 namespace Un1ver5e.Bot.Utilities
 {
@@ -16,6 +19,11 @@ namespace Un1ver5e.Bot.Utilities
         {
             // All host configuration goes here.
             return new HostBuilder()
+                .UseDefaultServiceProvider(config =>
+                {
+                    config.ValidateOnBuild = true;
+                    config.ValidateScopes = true;
+                })
                 .UseSerilog((context, services, logger) =>
                 {
                     string filePath = $"{services.GetRequiredService<FolderPathService>()["Logs"]}/Log-.log";
@@ -28,7 +36,7 @@ namespace Un1ver5e.Bot.Utilities
                 .ConfigureHostConfiguration(config =>
                 {
                     config.SetBasePath(Environment.CurrentDirectory);
-                    config.AddJsonFile("hostconfig.json");
+                    config.AddJsonFile("Data/hostconfig.json");
                     config.AddCommandLine(args);
                 })
                 .ConfigureServices((context, services) =>
@@ -44,7 +52,11 @@ namespace Un1ver5e.Bot.Utilities
                     .AddScoped<IGraphics, ImageSharpGraphics>()
 
                     .AddSingleton<FolderPathService>()
-                    .AddSingleton<DatabaseService>();
+
+                    .AddDbContext<ApplicationContext>(options =>
+                    {
+                        options.UseSqlite(context.Configuration["sqlite_connection"]);
+                    });
                 })
                 .ConfigureDiscordBot((context, bot) =>
                 {
@@ -59,14 +71,10 @@ namespace Un1ver5e.Bot.Utilities
                     string token = config["token"];
                     string[] prefixes = config.GetSection("prefixes").Get<string[]>();
 
-                    bot.Activities = new Disqord.Gateway.LocalActivity[] { new(splash, Disqord.ActivityType.Watching) };
+                    bot.Activities = new LocalActivity[] { new(splash, Disqord.ActivityType.Watching) };
                     bot.Token = token;
                     bot.Prefixes = prefixes;
-                })
-                .UseDefaultServiceProvider(config =>
-                {
-                    config.ValidateOnBuild = true;
-                    config.ValidateScopes = true;
+                    bot.Intents |= GatewayIntent.DirectMessages | GatewayIntent.DirectReactions;
                 })
                 .Build();
         }
