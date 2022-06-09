@@ -1,18 +1,15 @@
 ﻿using Disqord;
 using Disqord.Bot;
 using Qmmands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Un1ver5e.Bot.Commands.Attributes;
+using System.Text.RegularExpressions;
 using Un1ver5e.Bot.Services.Database;
 using Un1ver5e.Bot.Services.Database.Entities;
 using Un1ver5e.Bot.Utilities;
+using Un1ver5e.Commands.Attributes;
 
 namespace Un1ver5e.Bot.Commands
 {
+    [RequireDebug]
     [Name("🍅 Pomodoro")]
     [Group("pomodoro", "pmd"), Description("Таймеры помодоро")]
     public class PomodoroCommandModule : DiscordModuleBase
@@ -27,14 +24,7 @@ namespace Un1ver5e.Bot.Commands
         [Command("view")]
         public DiscordCommandResult ViewCommand()
         {
-            ulong id = Context.Author.Id.RawValue;
-
-            PomodoroData data = dbCtx.PomodoroData.Where(data => data.Id == id).FirstOrDefault()!;
-
-            if (data is null)
-            {
-                data = new PomodoroData() { Id = id };
-            }
+            PomodoroData data = dbCtx.GetPomodoro(Context.Author.Id.RawValue);
 
             IMember authorAsMember = (IMember)Context.Author!;
 
@@ -52,19 +42,19 @@ namespace Un1ver5e.Bot.Commands
                     new()
                     {
                         Name = "Работа",
-                        Value = data.PomodoroWork.ToString().AsCodeBlock(),
+                        Value = data.Work.ToString().AsCodeBlock(),
                         IsInline = true
                     },
                     new()
                     {
                         Name = "Короткий отдых",
-                        Value = data.PomodoroShortRest.ToString().AsCodeBlock(),
+                        Value = data.ShortRest.ToString().AsCodeBlock(),
                         IsInline = true
                     },
                     new()
                     {
                         Name = "Длинный отдых",
-                        Value = data.PomodoroLongRest.ToString().AsCodeBlock(),
+                        Value = data.LongRest.ToString().AsCodeBlock(),
                         IsInline = true
                     },
                     new()
@@ -80,9 +70,67 @@ namespace Un1ver5e.Bot.Commands
         }
 
         [Command("set")]
-        public async ValueTask<DiscordCommandResult> SetCommand()
+        public async ValueTask<DiscordCommandResult> SetCommand(string property, string value)
         {
-            
+            property = property.ToLower();
+
+            string[] properties = { "work", "shortrest", "longrest", "pattern" };
+
+            if (properties.Contains(property) == false)
+            {
+                LocalEmbed response = new LocalEmbed().WithTitle($"Недопустимое значение. Выберите что-то из:{string.Join('\n', properties).AsCodeBlock()}");
+                return Reply(response);
+            }
+
+            value = value.ToUpper();
+
+            if (property == "pattern")
+            {
+                Regex regex = new("[WSL]+");
+
+                if (regex.IsMatch(value) == false)
+                {
+                    LocalEmbed response = new LocalEmbed().WithTitle($"Недопустимое значение. Паттерн должен состоять из символов W, S, L, означающих Work, Short и Long соответственно.");
+                    return Reply(response);
+                }
+
+                PomodoroData data = dbCtx.GetPomodoro(Context.Author.Id.RawValue);
+                data.Pattern = value;
+                dbCtx.PomodoroData.Update(data);
+                await dbCtx.SaveChangesAsync();
+
+                return Reply(":white_check_mark:");
+            }
+            else
+            {
+                TimeSpan ts;
+
+                if (TimeSpan.TryParse(value, out ts) == false)
+                {
+                    LocalEmbed response = new LocalEmbed().WithTitle($"Недопустимое значение. Не удалось преобразовать в формат времени.");
+                    return Reply(response);
+                }
+
+                PomodoroData data = dbCtx.GetPomodoro(Context.Author.Id.RawValue);
+                
+                switch (property)
+                {
+                    case "work":
+                        data.Work = ts;
+                        break;
+                    case "shortrest":
+                        data.ShortRest = ts;
+                        break;
+                    case "longrest":
+                        data.LongRest = ts;
+                        break;
+                }
+
+                dbCtx.PomodoroData.Update(data);
+                await dbCtx.SaveChangesAsync();
+
+                return Reply(":white_check_mark:");
+            }
         }
     }
 }

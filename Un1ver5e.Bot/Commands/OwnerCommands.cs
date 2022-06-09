@@ -5,11 +5,8 @@ using Disqord.Gateway;
 using Microsoft.Extensions.Hosting;
 using Qmmands;
 using Serilog.Core;
-using Un1ver5e.Bot.BoardGames.Catan.Entities;
-using Un1ver5e.Bot.BoardGames.Catan.Views;
 using Un1ver5e.Bot.Services;
 using Un1ver5e.Bot.Services.Database;
-using Un1ver5e.Bot.Services.Database.Entities;
 using Un1ver5e.Bot.Utilities;
 
 namespace Un1ver5e.Bot.Commands

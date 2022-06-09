@@ -1,18 +1,22 @@
 ﻿using Disqord;
 using Disqord.Extensions.Interactivity.Menus;
+using Un1ver5e.Bot.Services.Database;
+using Un1ver5e.Bot.Services.Database.Entities;
 using Un1ver5e.Bot.Utilities;
 
 namespace Un1ver5e.Bot.BoardGames.TicTacToe
 {
     public class TttView : ViewBase
     {
-        private IMember cross;
-        private IMember nil;
-        private bool?[] field = new bool?[9];
+        private readonly ApplicationContext dbctx;
+        private readonly IMember cross;
+        private readonly IMember nil;
+        private readonly bool?[] field = new bool?[9];
         private bool crossTurn = true;
 
-        public TttView(IMember cross, IMember nil) : base(default)
+        public TttView(ApplicationContext dbctx, IMember cross, IMember nil) : base(default)
         {
+            this.dbctx = dbctx;
             this.cross = cross;
             this.nil = nil;
 
@@ -69,8 +73,11 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
 
             crossTurn = !crossTurn;
         }
+
         private async ValueTask EndGame(IMember? winner)
         {
+            TicTacToeData nilData = dbctx.GetTicTacToe(nil.Id);
+            TicTacToeData crossData = dbctx.GetTicTacToe(cross.Id);
 
             LocalEmbed embed;
 
@@ -85,10 +92,14 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
                     Description = $"Игра между {crossName} и {nilName}",
                     ThumbnailUrl = Menu.Client.CurrentUser.GetAvatarUrl()
                 };
+
+                crossData.Draw++;
+                nilData.Draw++;
             }
             else
             {
-                IMember loser = cross == winner ? nil : cross;
+                bool crossWin = cross == winner;
+                IMember loser = crossWin ? nil : cross;
 
                 embed = new()
                 {
@@ -96,16 +107,33 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
                     Description = $"Противник {loser.Nick ?? loser.Name}",
                     ThumbnailUrl = winner.GetGuildAvatarUrl()
                 };
+
+                if (crossWin)
+                {
+                    crossData.Win++;
+                    nilData.Lose++;
+                }
+                else
+                {
+                    crossData.Lose++;
+                    nilData.Win++;
+                }
             }
 
+            //Updating message
             TemplateMessage = new LocalMessage().AddEmbed(embed);
-
+            //Disabling buttons
             foreach (ButtonViewComponent button in EnumerateComponents())
             {
                 button.IsDisabled = true;
             }
-
+            //Saving
             await Menu.ApplyChangesAsync();
+
+            //Updating data in database
+            dbctx.Update(crossData);
+            dbctx.Update(nilData);
+            await dbctx.SaveChangesAsync();
         }
 
         private void RestoreButtons()

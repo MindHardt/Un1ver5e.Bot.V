@@ -9,9 +9,9 @@ namespace Un1ver5e.Bot.Services.Database.Entities
         /// </summary>
         public ulong Id { get; set; }
 
-        public TimeSpan PomodoroWork { get; set; } = TimeSpan.FromMinutes(45);
-        public TimeSpan PomodoroShortRest { get; set; } = TimeSpan.FromMinutes(5);
-        public TimeSpan PomodoroLongRest { get; set; } = TimeSpan.FromMinutes(15);
+        public TimeSpan Work { get; set; } = TimeSpan.FromMinutes(45);
+        public TimeSpan ShortRest { get; set; } = TimeSpan.FromMinutes(5);
+        public TimeSpan LongRest { get; set; } = TimeSpan.FromMinutes(15);
         public string Pattern { get; set; } = "WSWSWL";
     }
 }

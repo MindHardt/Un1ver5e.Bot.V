@@ -1,8 +1,11 @@
 ﻿using Disqord;
 using Disqord.Bot;
 using Disqord.Extensions.Interactivity.Menus;
+using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 using Un1ver5e.Bot.BoardGames.TicTacToe;
+using Un1ver5e.Bot.Services.Database;
+using Un1ver5e.Bot.Services.Database.Entities;
 using Un1ver5e.Bot.Services.Dice;
 
 namespace Un1ver5e.Bot.Commands
@@ -10,12 +13,14 @@ namespace Un1ver5e.Bot.Commands
     [Name("🎲 Настолки"), Description("Команды для настолок!")]
     public partial class BoardGamesCommands : DiscordModuleBase
     {
-        public BoardGamesCommands(IDiceService service)
+        private readonly IDiceService service;
+        private readonly ApplicationContext dbctx;
+
+        public BoardGamesCommands(IDiceService service, ApplicationContext dbctx)
         {
             this.service = service;
+            this.dbctx = dbctx;
         }
-
-        private readonly IDiceService service;
 
         [Command("throw", "dice"), Description("Бросает куб, заданный текстовым описанием.")]
         public DiscordCommandResult ThrowCommand(string query)
@@ -39,7 +44,7 @@ namespace Un1ver5e.Bot.Commands
 
         [RequireGuild]
         [Command("challenge", "fight"), Description("Решаем дела по-мужски.")]
-        public DiscordCommandResult Challenge(IMember opponent, string dice = "1d100")
+        public DiscordCommandResult ChallengeCommand(IMember opponent, string dice = "1d100")
         {
             IMember author = (IMember)Context.Author;
 
@@ -86,18 +91,51 @@ namespace Un1ver5e.Bot.Commands
 
             return Reply(embed);
         }
-
+        
+        [RequireGuild]
         [Command("ttt"), RequireGuild()]
-        public async ValueTask TestCommand(IMember opponent)
+        public async ValueTask TttCommand(IMember opponent)
         {
             IMember author = (IMember)Context.Author;
 
-            DefaultMenu menu = new(new TttView(author, opponent))
+            DefaultMenu menu = new(new TttView(dbctx, author, opponent))
             {
                 AuthorId = null
             };
 
             await Bot.StartMenuAsync(Context.ChannelId, menu);
+        }
+
+        [RequireGuild]
+        [Command("rpc"), RequireGuild()]
+        public async ValueTask RpcCommand(IMember opponent)
+        {
+            IMember author = (IMember)Context.Author;
+
+            DefaultMenu menu = new(new RpcView(dbctx, author, opponent))
+            {
+                AuthorId = null
+            };
+
+            await Bot.StartMenuAsync(Context.ChannelId, menu);
+        }
+
+        [Command("bgstats"), Description("Статистика ура.")]
+        public DiscordCommandResult BoardGamesStatsCommand()
+        {
+            TicTacToeData ttt = dbctx.GetTicTacToe(Context.Author.Id.RawValue);
+
+            RpcData rpc = dbctx.GetRpc(Context.Author.Id.RawValue);
+
+            LocalEmbedField[] fields =
+            {
+                ttt.GetEmbedField("Крестики-нолики"),
+                rpc.GetEmbedField("Камень-ножницы-бумага")
+            };
+
+            LocalEmbed embed = new LocalEmbed().WithFields(fields);
+            //Long-term TODO: Make this paginated when actually makes any sense.
+            return Reply(embed);
         }
     }
 }

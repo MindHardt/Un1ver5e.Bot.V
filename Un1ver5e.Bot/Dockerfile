@@ -19,4 +19,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Un1ver5e.Bot.dll"]
-COPY ["Data", "Data"]
+COPY ["../Data", "Data"]

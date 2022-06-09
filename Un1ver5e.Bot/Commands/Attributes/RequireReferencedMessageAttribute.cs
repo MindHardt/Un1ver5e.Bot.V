@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Disqord.Bot;
+﻿using Disqord.Bot;
 using Qmmands;
 
 namespace Un1ver5e.Commands.Attributes
