@@ -128,11 +128,10 @@ namespace Un1ver5e.Bot.Commands
             TicTacToeData ttt =     dbctx.FindOrCreate<TicTacToeData>(authorId);
             RpcData rpc =           dbctx.FindOrCreate<RpcData>(authorId);
 
-
             LocalEmbedField[] fields =
             {
-                ttt.GetEmbedField("Крестики-нолики"),
-                rpc.GetEmbedField("Камень-ножницы-бумага")
+                ttt.AsEmbedField("Крестики-нолики"),
+                rpc.AsEmbedField("Камень-ножницы-бумага")
             };
 
             LocalEmbed embed = new LocalEmbed().WithFields(fields);

@@ -11,6 +11,6 @@ namespace Un1ver5e.Bot.Services.Database.Entities.Abstract
         /// <summary>
         /// The discord user Id converted to <see cref="ulong"/>.
         /// </summary>
-        public ulong UserId { get; internal init; }
+        public ulong UserId { get; protected internal init; }
     }
 }
