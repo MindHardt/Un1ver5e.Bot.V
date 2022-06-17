@@ -19,12 +19,14 @@ namespace Un1ver5e.Bot.Commands
         private readonly IHost host;
         private readonly LoggingLevelSwitch logswitch;
         private readonly FolderPathService paths;
+        private readonly ApplicationContext dbctx;
 
-        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch, Random random, ApplicationContext dbcontext = null, FolderPathService paths = null)
+        public OwnerCommands(IHost host, LoggingLevelSwitch logswitch, Random random, FolderPathService paths, ApplicationContext dbctx)
         {
             this.host = host;
             this.logswitch = logswitch;
             this.paths = paths;
+            this.dbctx = dbctx;
         }
 
         [Command("setloglevel")]
@@ -73,7 +75,7 @@ namespace Un1ver5e.Bot.Commands
         }
 
         [Command("dbsnap"), RequirePrivate]
-        public DiscordCommandResult DBSnap()
+        public DiscordCommandResult DBSnapCommand()
         {
             Stream db = File.Open(paths["Database"] + "/mo.db", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
@@ -86,6 +88,12 @@ namespace Un1ver5e.Bot.Commands
             };
 
             return Reply(msg);
+        }
+
+        [Command("temp")]
+        public async ValueTask<DiscordCommandResult> TempCommand()
+        {
+            return Reply("lorem ipsum dolorem sit amet");
         }
     }
 }
