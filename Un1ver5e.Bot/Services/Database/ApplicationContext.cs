@@ -46,6 +46,7 @@ namespace Un1ver5e.Bot.Services.Database
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
     }

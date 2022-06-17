@@ -135,7 +135,7 @@ namespace Un1ver5e.Bot.BoardGames.TicTacToe
                 embed = new()
                 {
                     Title = $"Ничья!",
-                    Description = $"Игра между {offerer} и {opponentName}",
+                    Description = $"Игра между {offererName} и {opponentName}",
                     ThumbnailUrl = Menu.Client.CurrentUser.GetAvatarUrl()
                 };
 

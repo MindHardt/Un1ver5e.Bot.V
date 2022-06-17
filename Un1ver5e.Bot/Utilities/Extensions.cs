@@ -78,6 +78,59 @@ namespace Un1ver5e.Bot.Utilities
         /// <param name="view"></param>
         /// <param name="components"></param>
         /// <returns></returns>
+        public static async ValueTask<ViewBase> ReplaceComponentsAsync(this ViewBase view, IAsyncEnumerable<ViewComponent> components)
+        {
+            view.ClearComponents();
+
+            await foreach (ViewComponent component in components)
+            {
+                view.AddComponent(component);
+            }
+
+            return view;
+        }
+
+        /// <summary>
+        /// Replaces <paramref name="view"/>s components with ones specified in <paramref name="components"/>.
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="components"></param>
+        /// <returns></returns>
         public static ViewBase ReplaceComponents(this ViewBase view, params ViewComponent[] components) => ReplaceComponents(view, (IEnumerable<ViewComponent>)components);
+
+        /// <summary>
+        /// Disables all <see cref="ButtonViewComponent"/>s of this <see cref="ViewBase"/>.
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        public static async ValueTask<ViewBase> DisableComponentsAsync(this ViewBase view)
+        {
+            IEnumerable<ViewComponent> components =
+                await Task.WhenAll(view.EnumerateComponents()
+                .Select(async com =>
+                {
+                    await Task.Run(() =>
+                    {
+                        if (com is ButtonViewComponent button)
+                        {
+                            button.IsDisabled = true;
+                            return button;
+                        }
+                        if (com is SelectionViewComponent select)
+                        {
+                            select.IsDisabled = true;
+                            return select;
+                        }
+                        if (com is LinkButtonViewComponent link)
+                        {
+                            link.IsDisabled = true;
+                            return link;
+                        };
+                        return com;
+                    });
+                });
+
+            return view.ReplaceComponents(components);
+        }
     }
 }
