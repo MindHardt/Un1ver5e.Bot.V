@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Un1ver5e.Bot.Services.Database.Entities
 {
-    public class Tag
+    public class MessageTag
     {
         /// <summary>
         /// The internal database ID of the tag.
@@ -27,7 +27,7 @@ namespace Un1ver5e.Bot.Services.Database.Entities
         public string Attachments { get; set; }
 
         /// <summary>
-        /// Transforms this <see cref="Tag"/> into a <see cref="LocalMessage"/>.
+        /// Transforms this <see cref="MessageTag"/> into a <see cref="LocalMessage"/>.
         /// </summary>
         /// <returns></returns>
         public LocalMessage GetMessage()
@@ -54,16 +54,16 @@ namespace Un1ver5e.Bot.Services.Database.Entities
         }
 
         /// <summary>
-        /// Transforms this <see cref="IUserMessage"/> into a <see cref="Tag"/>.
+        /// Transforms this <see cref="IUserMessage"/> into a <see cref="MessageTag"/>.
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static Tag FromMessage(IUserMessage msg, string name)
+        public static MessageTag FromMessage(IUserMessage msg, string name)
         {
             string attachments = JsonSerializer.Serialize(msg.Attachments.Select(at => at.Url).ToArray());
 
-            return new Tag()
+            return new MessageTag()
             {
                 Attachments = attachments,
                 AuthorId = msg.Author.Id.RawValue,
@@ -72,7 +72,7 @@ namespace Un1ver5e.Bot.Services.Database.Entities
             };
         }
 
-        public Tag(ulong id, string name, ulong authorId, string? text, string[] attachments)
+        public MessageTag(ulong id, string name, ulong authorId, string? text, string[] attachments)
         {
             Id = id;
             Name = name;
@@ -82,7 +82,7 @@ namespace Un1ver5e.Bot.Services.Database.Entities
         }
 
 #pragma warning disable CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
-        public Tag() { }
+        public MessageTag() { }
 #pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
     }
 }

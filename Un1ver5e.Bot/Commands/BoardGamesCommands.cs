@@ -123,9 +123,11 @@ namespace Un1ver5e.Bot.Commands
         [Command("bgstats"), Description("Статистика ура.")]
         public DiscordCommandResult BoardGamesStatsCommand()
         {
-            TicTacToeData ttt = dbctx.GetTicTacToe(Context.Author.Id.RawValue);
+            ulong authorId = Context.Author.Id.RawValue;
 
-            RpcData rpc = dbctx.GetRpc(Context.Author.Id.RawValue);
+            TicTacToeData ttt =     dbctx.FindOrCreate<TicTacToeData>(authorId);
+            RpcData rpc =           dbctx.FindOrCreate<RpcData>(authorId);
+
 
             LocalEmbedField[] fields =
             {

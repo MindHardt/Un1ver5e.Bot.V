@@ -35,7 +35,7 @@ namespace Un1ver5e.Bot.Commands
 
             if (dbctx.Tags.Where(tag => tag.Name == name).Any()) throw new ArgumentException($"Tag {name} already exists");
 
-            Tag tag = Tag.FromMessage(referenced, name);
+            MessageTag tag = MessageTag.FromMessage(referenced, name);
             dbctx.Tags.Add(tag);
             await dbctx.SaveChangesAsync();
 

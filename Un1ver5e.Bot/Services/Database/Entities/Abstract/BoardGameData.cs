@@ -2,13 +2,8 @@
 
 namespace Un1ver5e.Bot.Services.Database.Entities.Abstract
 {
-    public abstract class BoardGameData
+    public abstract class BoardGameData : UserData
     {
-        /// <summary>
-        /// Gets the ID of the <see cref="IUser"/> which correlates to this <see cref="BoardGameData"/>.
-        /// </summary>
-        public ulong Id { get; set; }
-
         public int Win { get; set; } = 0;
         public int Lose { get; set; } = 0;
         public int Draw { get; set; } = 0;
