@@ -49,17 +49,15 @@ namespace Un1ver5e.Bot.Services.Dice
         /// <exception cref="ArgumentException"></exception>
         public IThrowResult ThrowByQuery(string text)
         {
-            Regex regex = new("(?<Dice>\\d*[Dd]\\d+)(?<Modifyer>[+-]\\d+)?");
+            Match match = Regex.Match(text, "(?<Dice>\\d*[Dd]\\d+)(?<Modifyer>[+-]\\d+)?");
 
-            if (regex.IsMatch(text) == false) throw new ArgumentException("Некорректный запрос!");
-
-            Match match = regex.Match(text);
+            if (match.Success == false) throw new ArgumentException("Некорректный запрос!");
 
             int modifyer = 0;
             string modifyerString = match.Groups["Modifyer"].Value;
             if (string.IsNullOrWhiteSpace(modifyerString) == false)
             {
-                modifyerString = modifyerString.First() == '+' ? modifyerString[1..] : modifyerString;
+                modifyerString = modifyerString[0] == '+' ? modifyerString[1..] : modifyerString;
                 modifyer = int.Parse(modifyerString);
             }
 

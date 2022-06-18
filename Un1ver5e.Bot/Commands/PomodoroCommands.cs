@@ -22,9 +22,9 @@ namespace Un1ver5e.Bot.Commands
         }
 
         [Command("view")]
-        public DiscordCommandResult ViewCommand()
+        public async ValueTask<DiscordCommandResult> ViewCommand()
         {
-            PomodoroData data = dbCtx.GetPomodoro(Context.Author.Id.RawValue);
+            PomodoroData data = await dbCtx.FindOrCreateAsync<PomodoroData>(Context.Author.Id.RawValue);
 
             IMember authorAsMember = (IMember)Context.Author!;
 
@@ -86,15 +86,13 @@ namespace Un1ver5e.Bot.Commands
 
             if (property == "pattern")
             {
-                Regex regex = new("[WSL]+");
-
-                if (regex.IsMatch(value) == false)
+                if (Regex.Match(value, "[WSL]+").Success == false)
                 {
                     LocalEmbed response = new LocalEmbed().WithTitle($"Недопустимое значение. Паттерн должен состоять из символов W, S, L, означающих Work, Short и Long соответственно.");
                     return Reply(response);
                 }
 
-                PomodoroData data = dbCtx.GetPomodoro(Context.Author.Id.RawValue);
+                PomodoroData data = await dbCtx.FindOrCreateAsync<PomodoroData>(Context.Author.Id.RawValue);
                 data.Pattern = value;
                 dbCtx.PomodoroData.Update(data);
                 await dbCtx.SaveChangesAsync();
@@ -111,8 +109,8 @@ namespace Un1ver5e.Bot.Commands
                     return Reply(response);
                 }
 
-                PomodoroData data = dbCtx.GetPomodoro(Context.Author.Id.RawValue);
-                
+                PomodoroData data = await dbCtx.FindOrCreateAsync<PomodoroData>(Context.Author.Id.RawValue);
+
                 switch (property)
                 {
                     case "work":
