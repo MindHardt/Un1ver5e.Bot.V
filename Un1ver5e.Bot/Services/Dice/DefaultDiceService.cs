@@ -73,11 +73,7 @@ namespace Un1ver5e.Bot.Services.Dice
         /// </summary>
         /// <param name="text"></param>
         /// <exception cref="ArgumentException"></exception>
-        private static bool CheckValidDiceText(string text)
-        {
-            Regex diceRegex = new("\\d*[Dd]\\d+");
-            return diceRegex.IsMatch(text);
-        }
+        private static bool CheckValidDiceText(string text) => Regex.Match(text, "\\d*[Dd]\\d+").Success;
 
         /// <summary>
         /// Parses correct text into a <see cref="DefaultDice"/> object.
